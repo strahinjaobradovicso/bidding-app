@@ -5,6 +5,7 @@
   "main": "app.js",
   "scripts": {
     "start_dev": "cross-env NODE_ENV=dev nodemon src/app.ts",
+    "start_test": "cross-env NODE_ENV=test nodemon src/app.ts",
     "test": "jest"
   },
   "repository": {
