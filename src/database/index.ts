@@ -1,19 +1,19 @@
-import { Sequelize } from "sequelize";
-import { DB_SCHEMA, DB_USERNAME, DB_PASSWORD, DB_HOST} from '../config'
-import initUser from "../models/user";
-import initItem from "../models/item";
-import initAuction from "../models/auction";
-import initBid from "../models/bid";
+import { Dialect, Sequelize } from "sequelize";
+import { DB_SCHEMA, DB_USERNAME, DB_PASSWORD, DB_HOST, DB_DIALECT} from '../config'
+import initUser from "./models/user";
+import initItem from "./models/item";
+import initAuction from "./models/auction";
+import initBid from "./models/bid";
 
 const sequelize = new Sequelize(DB_SCHEMA!, DB_USERNAME!, DB_PASSWORD, {
-    dialect: 'mysql',
+    dialect: DB_DIALECT as Dialect,
     host: DB_HOST
 })
 
 async function connect(){
     await sequelize.authenticate()
-    await sequelize.sync()
 }
+
 const DB = {
     sequelize,
     connect,

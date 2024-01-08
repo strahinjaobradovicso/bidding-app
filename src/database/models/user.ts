@@ -22,7 +22,6 @@ const initUser = (sequelize: Sequelize)=>{
         username:{
             type: DataTypes.STRING,
             allowNull: false
-    
         },
         password:{
             type: DataTypes.STRING,

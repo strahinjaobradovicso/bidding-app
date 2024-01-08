@@ -1,10 +1,9 @@
-import DB from "../database";
 import { Sequelize, Model, DataTypes, Optional } from "sequelize";
 import { Item } from "../interfaces/item";
 
 export type ItemCreationAttributes = Optional<Item, 'id' | 'description'>
 
-class ItemModel extends Model<Item, ItemCreationAttributes> implements Item{
+export class ItemModel extends Model<Item, ItemCreationAttributes> implements Item{
     declare id: number
     declare title: string
     declare price: number
