@@ -1,5 +1,3 @@
-import { Bid } from "../interfaces/bid";
-
 const dummyBids = [
     {   
         value: 210,

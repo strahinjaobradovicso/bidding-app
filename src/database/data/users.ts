@@ -1,5 +1,3 @@
-import { User } from "../interfaces/user";
-
 const dummyUsers = [
     {
         username:"John",

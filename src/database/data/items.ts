@@ -1,5 +1,3 @@
-import { Item } from "../interfaces/item";
-
 const dummyItems = [
     {
         title:"Rustic Chair",
