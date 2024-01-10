@@ -3,7 +3,7 @@ import { Auction } from "../interfaces/auction";
 
 export type AuctionCreationAttributes = Optional<Auction, 'id'>
 
-class AuctionModel extends Model<Auction, AuctionCreationAttributes> implements Auction{
+export class AuctionModel extends Model<Auction, AuctionCreationAttributes> implements Auction{
     declare id: number;
     declare start: Date;
     declare lastBid: number;

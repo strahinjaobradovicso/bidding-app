@@ -3,7 +3,7 @@ import { Bid } from "../interfaces/bid";
 
 export type BidCreationAttributes = Optional<Bid, 'id'>
 
-class BidModel extends Model<Bid, BidCreationAttributes> implements Bid {
+export class BidModel extends Model<Bid, BidCreationAttributes> implements Bid {
     declare id: number
     declare value: number
 }

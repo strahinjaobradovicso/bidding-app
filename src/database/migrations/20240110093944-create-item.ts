@@ -1,35 +1,37 @@
-import { DataTypes, QueryInterface } from "sequelize";
+import { QueryInterface, DataTypes } from "sequelize";
 
 /** @type {import('sequelize-cli').Migration} */
-export default {
-  async up(queryInterface:QueryInterface) {
-    await queryInterface.createTable('users', {
+module.exports = {
+  async up(queryInterface: QueryInterface) {
+    await queryInterface.createTable('items', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: DataTypes.INTEGER
       },
-      username: {
+      title: {
+        allowNull: false,
         type: DataTypes.STRING
       },
-      password: {
-        type: DataTypes.STRING
+      price: {
+        allowNull: false,
+        type: DataTypes.DOUBLE
       },
-      email: {
+      description: {
         type: DataTypes.STRING
       },
       created_at: {
         allowNull: false,
-        type: DataTypes.DATE,
+        type: DataTypes.DATE
       },
       updated_at: {
         allowNull: false,
-        type: DataTypes.DATE,
-      },
+        type: DataTypes.DATE
+      }
     });
   },
   async down(queryInterface: QueryInterface) {
-    await queryInterface.dropTable('users');
+    await queryInterface.dropTable('items');
   }
 };

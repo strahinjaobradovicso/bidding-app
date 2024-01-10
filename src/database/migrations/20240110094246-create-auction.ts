@@ -1,22 +1,24 @@
-import { DataTypes, QueryInterface, Sequelize } from "sequelize";
+import { QueryInterface, DataTypes } from "sequelize";
 
 /** @type {import('sequelize-cli').Migration} */
-export default {
+module.exports = {
   async up(queryInterface: QueryInterface) {
-    await queryInterface.createTable('items', {
+    await queryInterface.createTable('auctions', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: DataTypes.INTEGER
       },
-      title: {
-        type: DataTypes.STRING
+      start: {
+        allowNull: false,
+        type: DataTypes.DATE
       },
-      price: {
+      last_bid: {
         type: DataTypes.DOUBLE
       },
-      decription: {
+      status: {
+        allowNull: false,
         type: DataTypes.STRING
       },
       created_at: {
@@ -28,22 +30,8 @@ export default {
         type: DataTypes.DATE
       }
     });
-
-    await queryInterface.addColumn(
-      'items',
-      'user_id',
-      {
-        type: DataTypes.INTEGER,
-        references: {
-          model:'users',
-          key:'id'
-        },
-        onUpdate: 'CASCADE',
-        onDelete: 'CASCADE'
-      }
-    )
   },
   async down(queryInterface: QueryInterface) {
-    await queryInterface.dropTable('items');
+    await queryInterface.dropTable('auctions');
   }
 };

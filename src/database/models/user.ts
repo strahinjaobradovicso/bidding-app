@@ -10,6 +10,7 @@ export class UserModel extends Model<User, UserCreationAttributes> implements Us
     declare email: string;
 }
 
+
 const initUser = (sequelize: Sequelize)=>{
     UserModel.init(
         {

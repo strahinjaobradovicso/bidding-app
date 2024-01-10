@@ -24,11 +24,11 @@ const DB = {
 }
 
 DB.User.hasMany(DB.Item, {
-    foreignKey: 'seller_id',
+    foreignKey: 'user_id',
     onDelete: 'CASCADE'
 })
 DB.Item.belongsTo(DB.User, {
-    foreignKey: 'seller_id',
+    foreignKey: 'user_id',
     onDelete: 'CASCADE'
 })
 
@@ -60,11 +60,11 @@ DB.Bid.belongsTo(DB.Auction, {
 })
 
 DB.User.hasMany(DB.Auction, {
-    foreignKey: 'winner_id',
+    foreignKey: 'user_id',
     onDelete: 'CASCADE'
 })
 DB.Auction.belongsTo(DB.User, {
-    foreignKey: 'winner_id',
+    foreignKey: 'user_id',
     onDelete: 'CASCADE'
 })
 
