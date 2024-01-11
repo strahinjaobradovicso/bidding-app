@@ -1,13 +1,13 @@
 import { Sequelize, Optional, DataTypes, Model } from "sequelize";
-import { Auction } from "../interfaces/auction";
+import { Auction, AuctionStatus } from "../interfaces/auction";
 
-export type AuctionCreationAttributes = Optional<Auction, 'id'>
+export type AuctionCreationAttributes = Omit<Optional<Auction, 'id'>, 'lastBid' | 'status'>
 
 export class AuctionModel extends Model<Auction, AuctionCreationAttributes> implements Auction{
     declare id: number;
     declare start: Date;
     declare lastBid: number;
-    declare status: string
+    declare status: AuctionStatus;
 }
 
 const initAuction = (sequelize: Sequelize)=>{
@@ -29,7 +29,8 @@ const initAuction = (sequelize: Sequelize)=>{
                 allowNull: false
             },
             status:{
-                type: DataTypes.STRING,
+                type: DataTypes.ENUM(...Object.values(AuctionStatus)),
+                defaultValue: AuctionStatus.Upcoming,
                 allowNull: false
             }
         },
@@ -41,6 +42,5 @@ const initAuction = (sequelize: Sequelize)=>{
     )
     return AuctionModel;
 }
-
 
 export default initAuction;

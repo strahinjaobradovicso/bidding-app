@@ -1,8 +1,10 @@
+import { AuctionStatus } from "../interfaces/auction";
+
 const dummyAuctions = [
     {
         start: addMinutes(new Date(), 1),
         last_bid: 200,
-        status: 'upcoming',
+        status: AuctionStatus.Upcoming,
         item_id:1,
         user_id:null,
         created_at: new Date(),
@@ -11,7 +13,7 @@ const dummyAuctions = [
     {
         start: addMinutes(new Date(), 2),
         last_bid: 1800,
-        status: 'upcoming',
+        status: AuctionStatus.Upcoming,
         item_id:2,
         user_id:null,
         created_at: new Date(),
