@@ -2,12 +2,15 @@ import { Sequelize, Model, DataTypes, Optional } from "sequelize";
 import { Item } from "../interfaces/item";
 
 export type ItemCreationAttributes = Optional<Item, 'id' | 'description'>
+type ItemModelAttributes = Omit<Item, 'userId'>
 
-export class ItemModel extends Model<Item, ItemCreationAttributes> implements Item{
+export class ItemModel extends Model<ItemModelAttributes, ItemCreationAttributes> implements Item{
     declare id: number
     declare title: string
     declare price: number
     declare description: string
+    
+    declare userId: number
 }
 
 const initItem = (sequelize: Sequelize)=>{

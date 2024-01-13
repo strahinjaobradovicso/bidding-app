@@ -8,5 +8,7 @@ export interface Auction{
     id:number,
     start:Date,
     lastBid:number,
-    status:AuctionStatus
+    status:AuctionStatus,
+    itemId:number,
+    userId:number
 }

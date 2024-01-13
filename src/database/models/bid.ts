@@ -2,10 +2,14 @@ import { Sequelize, Model, Optional, DataTypes } from "sequelize";
 import { Bid } from "../interfaces/bid";
 
 export type BidCreationAttributes = Optional<Bid, 'id'>
+type BidModelAttributes = Omit<Bid, 'auctionId' | 'userId'>
 
-export class BidModel extends Model<Bid, BidCreationAttributes> implements Bid {
+export class BidModel extends Model<BidModelAttributes, BidCreationAttributes> implements Bid {
     declare id: number
     declare value: number
+
+    declare auctionId: number
+    declare userId: number
 }
 
 
