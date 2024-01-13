@@ -1,9 +1,8 @@
 import { IsAlphanumeric, IsEmail, MinLength } from "class-validator"
-import { UserCreationAttributes } from "../database/models/user"
 
 const PASSWORD_MIN_LENGTH = 8;
 
-export class CreateUserDto implements UserCreationAttributes{
+export class CreateUserDto {
     
     @IsAlphanumeric()
     declare username: string

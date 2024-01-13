@@ -1,9 +1,11 @@
 import { IsNumber, Min } from "class-validator";
-import { BidCreationAttributes } from "../database/models/bid";
 
-export class CreateBidDto implements BidCreationAttributes {
+export class CreateBidDto {
     
     @IsNumber()
     @Min(0)
     declare value: number;
+
+    @IsNumber()
+    declare auctionId: number;
 }

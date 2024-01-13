@@ -1,8 +1,10 @@
-import { IsDate } from "class-validator";
-import { AuctionCreationAttributes } from "../database/models/auction";
+import { IsDate, IsNumber } from "class-validator";
 
-export class CreateAuctionDto implements AuctionCreationAttributes {
+export class CreateAuctionDto {
 
     @IsDate()
-    declare start: Date;    
+    declare start: Date;
+    
+    @IsNumber()
+    declare itemId: number;
 }
