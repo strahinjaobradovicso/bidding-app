@@ -24,48 +24,86 @@ const DB = {
 }
 
 DB.User.hasMany(DB.Item, {
-    foreignKey: 'user_id',
-    onDelete: 'CASCADE'
+    foreignKey: {
+        name: 'userId',
+        field: 'user_id',
+        allowNull: false
+    },
+    onDelete: 'CASCADE',
 })
 DB.Item.belongsTo(DB.User, {
-    foreignKey: 'user_id',
+    foreignKey: {
+        name: 'userId',
+        field: 'user_id',
+        allowNull: false
+    },
     onDelete: 'CASCADE'
 })
 
 DB.Item.hasOne(DB.Auction, {
-    foreignKey: 'item_id',
+    foreignKey: {
+        name: 'itemId',
+        field: 'item_id',
+        allowNull: false
+    },
     onDelete: 'CASCADE'
 })
 DB.Auction.belongsTo(DB.Item, {
-    foreignKey: 'item_id',
+    foreignKey: {
+        name: 'itemId',
+        field: 'item_id',
+        allowNull: false
+    },
     onDelete: 'CASCADE'
 })
 
 DB.User.hasMany(DB.Bid, {
-    foreignKey: 'user_id',
+    foreignKey: {
+        name: 'userId',
+        field: 'user_id',
+        allowNull: false
+    },
     onDelete: 'CASCADE'
 })
 DB.Bid.belongsTo(DB.User, {
-    foreignKey: 'user_id',
+    foreignKey: {
+        name: 'userId',
+        field: 'user_id',
+        allowNull: false
+    },
     onDelete: 'CASCADE'
 })
 
 DB.Auction.hasMany(DB.Bid, {
-    foreignKey: 'auction_id',
+    foreignKey: {
+        name: 'auctionId',
+        field: 'auction_id',
+        allowNull: false
+    },
     onDelete: 'CASCADE'
 })  
 DB.Bid.belongsTo(DB.Auction, {
-    foreignKey: 'auction_id',
+    foreignKey: {
+        name: 'auctionId',
+        field: 'auction_id',
+        allowNull: false
+    },
     onDelete: 'CASCADE'
 })
 
 DB.User.hasMany(DB.Auction, {
-    foreignKey: 'user_id',
-    onDelete: 'CASCADE'
+    foreignKey: {
+        name: 'userId',
+        field: 'user_id',
+        allowNull: true
+    },
 })
 DB.Auction.belongsTo(DB.User, {
-    foreignKey: 'user_id',
-    onDelete: 'CASCADE'
+    foreignKey: {
+        name: 'userId',
+        field: 'user_id',
+        allowNull: true
+    },
 })
 
 
