@@ -40,7 +40,7 @@ DB.Item.belongsTo(DB.User, {
     onDelete: 'CASCADE'
 })
 
-DB.Item.hasOne(DB.Auction, {
+DB.Item.hasMany(DB.Auction, {
     foreignKey: {
         name: 'itemId',
         field: 'item_id',
