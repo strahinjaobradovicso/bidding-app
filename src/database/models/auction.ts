@@ -1,17 +1,25 @@
-import { Sequelize, Optional, DataTypes, Model } from "sequelize";
-import { Auction, AuctionStatus } from "../interfaces/auction";
+import { Sequelize, DataTypes, Model, CreationOptional, InferAttributes, InferCreationAttributes } from "sequelize";
 
-export type AuctionCreationAttributes = Omit<Optional<Auction, 'id'>, 'lastBid' | 'status' | 'userId'>
-type AuctionModelAttributes = Omit<Auction, 'itemId' | 'userId'>
+enum AuctionStatus {
+    Upcoming = 'UPCOMING',
+    Started = 'STARTED',
+    Done = 'DONE'
+}
 
-export class AuctionModel extends Model<AuctionModelAttributes, AuctionCreationAttributes> implements Auction{
-    declare id: number;
-    declare start: Date;
-    declare lastBid: number;
-    declare status: AuctionStatus;
+interface AuctionModel {
+    id: CreationOptional<number>,
+    start: Date,
+    lastBid: number,
+    status: AuctionStatus,
+    itemId: number,
+    userId: number
+}
 
-    declare itemId: number;
-    declare userId: number;
+type AuctionModelAttributes = InferAttributes<AuctionModel, { omit:'itemId' | 'userId' }>
+type AuctionCreationAttributes = InferCreationAttributes<AuctionModel, { omit: 'lastBid' | 'status' | 'userId'}>
+
+class AuctionModel extends Model<AuctionModelAttributes, AuctionCreationAttributes> {
+    
 }
 
 const initAuction = (sequelize: Sequelize)=>{

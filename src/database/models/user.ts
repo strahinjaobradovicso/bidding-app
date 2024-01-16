@@ -1,14 +1,17 @@
-import { Sequelize, Model, DataTypes, Optional } from "sequelize";
-import { User } from "../interfaces/user";
+import { Sequelize, Model, DataTypes, InferAttributes, CreationOptional, InferCreationAttributes } from "sequelize";
 
-export type UserCreationAttributes = Optional<User, 'id'>
-type UserModelAttributes = User
+interface UserModel {
+    id: CreationOptional<number>,
+    username:string,
+    password:string,
+    email:string,
+}
 
-export class UserModel extends Model<UserModelAttributes, UserCreationAttributes> implements User {
-    declare id: number;
-    declare username: string;
-    declare password: string;
-    declare email: string;
+type UserModelAttributes = InferAttributes<UserModel>
+type UserCreationAttributes = InferCreationAttributes<UserModel>
+
+class UserModel extends Model<UserModelAttributes, UserCreationAttributes> {
+
 }
 
 const initUser = (sequelize: Sequelize)=>{

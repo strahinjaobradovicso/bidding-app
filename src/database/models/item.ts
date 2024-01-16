@@ -1,16 +1,18 @@
-import { Sequelize, Model, DataTypes, Optional } from "sequelize";
-import { Item } from "../interfaces/item";
+import { Sequelize, Model, DataTypes, CreationOptional, InferAttributes, InferCreationAttributes } from "sequelize";
 
-export type ItemCreationAttributes = Optional<Item, 'id' | 'description'>
-type ItemModelAttributes = Omit<Item, 'userId'>
+interface ItemModel {
+    id: CreationOptional<number>,
+    title: string,
+    price: number,
+    description: CreationOptional<string>,
+    userId: number
+}
 
-export class ItemModel extends Model<ItemModelAttributes, ItemCreationAttributes> implements Item{
-    declare id: number
-    declare title: string
-    declare price: number
-    declare description: string
+type ItemModelAttributes = InferAttributes<ItemModel, { omit:'userId' }>
+type ItemCreationAttributes = InferCreationAttributes<ItemModel>
+
+class ItemModel extends Model<ItemModelAttributes, ItemCreationAttributes> {
     
-    declare userId: number
 }
 
 const initItem = (sequelize: Sequelize)=>{

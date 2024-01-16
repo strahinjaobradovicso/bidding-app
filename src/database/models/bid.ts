@@ -1,17 +1,18 @@
-import { Sequelize, Model, Optional, DataTypes } from "sequelize";
-import { Bid } from "../interfaces/bid";
+import { Sequelize, Model, DataTypes, CreationOptional, InferCreationAttributes, InferAttributes } from "sequelize";
 
-export type BidCreationAttributes = Optional<Bid, 'id'>
-type BidModelAttributes = Omit<Bid, 'auctionId' | 'userId'>
-
-export class BidModel extends Model<BidModelAttributes, BidCreationAttributes> implements Bid {
-    declare id: number
-    declare value: number
-
-    declare auctionId: number
-    declare userId: number
+interface BidModel {
+    id: CreationOptional<number>,
+    value: number,
+    auctionId: number,
+    userId: number
 }
 
+type BidModelAttributes = InferAttributes<BidModel, { omit: 'auctionId' | 'userId' }>
+type BidCreationAttributes = InferCreationAttributes<BidModel>
+
+class BidModel extends Model<BidModelAttributes, BidCreationAttributes> {
+
+}
 
 const initBid = (sequelize: Sequelize)=>{
 
