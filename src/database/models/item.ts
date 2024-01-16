@@ -1,17 +1,24 @@
 import { Sequelize, Model, DataTypes, CreationOptional, InferAttributes, InferCreationAttributes } from "sequelize";
+import { BelongsToMixin } from "../mixins/belongsToMixin";
+import { UserModel } from "./user";
+import { HasManyMixin } from "../mixins/hasManyMixin";
+import { AuctionModel } from "./auction";
 
-interface ItemModel {
-    id: CreationOptional<number>,
-    title: string,
-    price: number,
-    description: CreationOptional<string>,
-    userId: number
+export interface ItemModel extends
+    BelongsToMixin<UserModel, number, 'UserModel'>,
+    HasManyMixin<AuctionModel, number, 'AuctionModel'>
+    {
+        id: CreationOptional<number>,
+        title: string,
+        price: number,
+        description: CreationOptional<string>,
+        userId: number
 }
 
 type ItemModelAttributes = InferAttributes<ItemModel, { omit:'userId' }>
 type ItemCreationAttributes = InferCreationAttributes<ItemModel>
 
-class ItemModel extends Model<ItemModelAttributes, ItemCreationAttributes> {
+export class ItemModel extends Model<ItemModelAttributes, ItemCreationAttributes> {
     
 }
 

@@ -1,4 +1,9 @@
 import { Sequelize, DataTypes, Model, CreationOptional, InferAttributes, InferCreationAttributes } from "sequelize";
+import { BelongsToMixin } from "../mixins/belongsToMixin";
+import { ItemModel } from "./item";
+import { UserModel } from "./user";
+import { HasManyMixin } from "../mixins/hasManyMixin";
+import { BidModel } from "./bid";
 
 enum AuctionStatus {
     Upcoming = 'UPCOMING',
@@ -6,19 +11,23 @@ enum AuctionStatus {
     Done = 'DONE'
 }
 
-interface AuctionModel {
-    id: CreationOptional<number>,
-    start: Date,
-    lastBid: number,
-    status: AuctionStatus,
-    itemId: number,
-    userId: number
+export interface AuctionModel extends 
+    BelongsToMixin<ItemModel, number, 'ItemModel'>,
+    BelongsToMixin<UserModel, number, 'UserModel'>,
+    HasManyMixin<BidModel, number, 'BidModel'>
+    {
+        id: CreationOptional<number>,
+        start: Date,
+        lastBid: number,
+        status: AuctionStatus,
+        itemId: number,
+        userId: number
 }
 
 type AuctionModelAttributes = InferAttributes<AuctionModel, { omit:'itemId' | 'userId' }>
 type AuctionCreationAttributes = InferCreationAttributes<AuctionModel, { omit: 'lastBid' | 'status' | 'userId'}>
 
-class AuctionModel extends Model<AuctionModelAttributes, AuctionCreationAttributes> {
+export class AuctionModel extends Model<AuctionModelAttributes, AuctionCreationAttributes> {
     
 }
 

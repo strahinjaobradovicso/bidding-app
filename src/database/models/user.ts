@@ -1,16 +1,20 @@
 import { Sequelize, Model, DataTypes, InferAttributes, CreationOptional, InferCreationAttributes } from "sequelize";
+import { HasManyMixin } from "../mixins/hasManyMixin";
+import { ItemModel } from "./item";
 
-interface UserModel {
-    id: CreationOptional<number>,
-    username:string,
-    password:string,
-    email:string,
+export interface UserModel extends
+    HasManyMixin<ItemModel, number, 'ItemModel'>
+    {
+        id: CreationOptional<number>,
+        username:string,
+        password:string,
+        email:string,
 }
 
 type UserModelAttributes = InferAttributes<UserModel>
 type UserCreationAttributes = InferCreationAttributes<UserModel>
 
-class UserModel extends Model<UserModelAttributes, UserCreationAttributes> {
+export class UserModel extends Model<UserModelAttributes, UserCreationAttributes> {
 
 }
 

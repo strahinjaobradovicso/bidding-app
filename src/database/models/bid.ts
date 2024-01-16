@@ -1,16 +1,22 @@
 import { Sequelize, Model, DataTypes, CreationOptional, InferCreationAttributes, InferAttributes } from "sequelize";
+import { BelongsToMixin } from "../mixins/belongsToMixin";
+import { AuctionModel } from "./auction";
+import { UserModel } from "./user";
 
-interface BidModel {
-    id: CreationOptional<number>,
-    value: number,
-    auctionId: number,
-    userId: number
+export interface BidModel extends 
+    BelongsToMixin<AuctionModel, number, 'AuctionModel'>,
+    BelongsToMixin<UserModel, number, 'UserModel'>
+    {
+        id: CreationOptional<number>,
+        value: number,
+        auctionId: number,
+        userId: number
 }
 
 type BidModelAttributes = InferAttributes<BidModel, { omit: 'auctionId' | 'userId' }>
 type BidCreationAttributes = InferCreationAttributes<BidModel>
 
-class BidModel extends Model<BidModelAttributes, BidCreationAttributes> {
+export class BidModel extends Model<BidModelAttributes, BidCreationAttributes> {
 
 }
 
