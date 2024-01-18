@@ -38,7 +38,6 @@ export class UserService {
         try {
             user = await this.dbUser.create(userData);            
         } catch (error) {
-            console.log('Here: '+error)
             throw new HttpException(500, '')
         }
 
