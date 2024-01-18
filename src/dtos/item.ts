@@ -16,4 +16,7 @@ export class CreateItemDto {
     @IsOptional()
     @IsString()
     declare description?: string | undefined;
+
+    @IsNumber()
+    declare userId: number
 }
