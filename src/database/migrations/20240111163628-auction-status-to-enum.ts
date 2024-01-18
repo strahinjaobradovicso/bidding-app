@@ -1,5 +1,5 @@
 import { DataTypes, QueryInterface } from "sequelize"
-import { AuctionStatus } from "../interfaces/auction";
+import { AuctionStatus } from "../models/auction";
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {

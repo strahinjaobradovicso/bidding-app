@@ -5,7 +5,7 @@ import { UserModel } from "./user";
 import { HasManyMixin } from "../mixins/hasManyMixin";
 import { BidModel } from "./bid";
 
-enum AuctionStatus {
+export enum AuctionStatus {
     Upcoming = 'UPCOMING',
     Started = 'STARTED',
     Done = 'DONE'
