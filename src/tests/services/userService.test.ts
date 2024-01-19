@@ -4,7 +4,7 @@ import { CreateUserDto } from "../../dtos/user"
 import { HttpException } from "../../exceptions/httpException"
 import { UserService } from "../../services/UserService"
 
-let userService = new UserService()
+const userService = new UserService()
 
 describe('user service', ()=>{
 
