@@ -2,6 +2,9 @@ import DB from "../database";
 import { UserModel } from "../database/models/user";
 import { CreateUserDto } from "../dtos/user";
 import { HttpException } from "../exceptions/httpException";
+import * as crypto from 'crypto';
+
+
 
 export class UserService {
 
@@ -34,14 +37,20 @@ export class UserService {
         }
 
 
-        let user;
         try {
-            user = await this.dbUser.create(userData);            
+            const salt = crypto.randomBytes(16).toString('hex')
+            userData.password = crypto.pbkdf2Sync(userData.password, 
+                salt, 1000, 64, 'sha512').toString('hex')
+            
+            let userWithSalt = {...userData, salt};
+            await this.dbUser.create(userWithSalt);    
         } catch (error) {
             throw new HttpException(500)
         }
 
-        return user;
+        const user = await this.dbUser.findOne({where: {username: userData.username}})
+
+        return user!;
 
     }
 

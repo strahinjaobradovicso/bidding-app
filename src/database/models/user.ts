@@ -9,6 +9,7 @@ export interface UserModel extends
         username:string,
         password:string,
         email:string,
+        salt:string
 }
 
 type UserModelAttributes = InferAttributes<UserModel>
@@ -40,12 +41,19 @@ const initUser = (sequelize: Sequelize)=>{
             type: DataTypes.STRING,
             allowNull: false,
             unique: true
+        },
+        salt:{
+            type: DataTypes.STRING,
+            allowNull: false,
         }
         },
         {
             tableName: 'users',
             underscored:true,
-            sequelize
+            sequelize,
+            defaultScope: {
+                attributes: {exclude:['password', 'salt']}
+            }
         }
     )
 
