@@ -1,4 +1,4 @@
-import { AuctionStatus } from "../interfaces/auction";
+import { AuctionStatus } from "../models/auction";
 
 const dummyAuctions = [
     {
