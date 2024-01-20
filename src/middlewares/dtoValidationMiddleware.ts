@@ -4,12 +4,13 @@ import { NextFunction, Request, RequestHandler, Response } from "express";
 import { HttpException } from "../exceptions/httpException";
 
 
-const dtoValidationMiddleware = (type: any, skipMissingProperties = false) => {
+const dtoValidationMiddleware = (type: any, skipMissingProperties = false, whitelist = true, forbidNonWhitelisted = true) => {
     
     return async (req: Request, res: Response, next: NextFunction) => {
         const obj = plainToInstance(type, req.body);
         
-        const errors:ValidationError[] = await validate(obj, { skipMissingProperties });
+        const errors:ValidationError[] = await validate(obj,
+             { skipMissingProperties, whitelist, forbidNonWhitelisted });
 
         let message;
 

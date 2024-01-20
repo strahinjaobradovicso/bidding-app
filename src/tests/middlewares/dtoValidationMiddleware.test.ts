@@ -3,6 +3,9 @@ import { NextFunction, Request, Response } from "express";
 import { HttpException } from "../../exceptions/httpException";
 import { CreateUserDto } from "../../dtos/user";
 
+const requestHandlerFn = dtoValidationMiddleware(CreateUserDto, false)
+
+
 describe('dto validation middleware', ()=>{
 
     let req: Partial<Request>;
@@ -21,7 +24,6 @@ describe('dto validation middleware', ()=>{
                 email: 'dummy@test.com'
             }
         }
-        const requestHandlerFn = dtoValidationMiddleware(CreateUserDto, false)
         requestHandlerFn(req as Request, res as Response, next as NextFunction).then(message => {
             expect(message).toBeUndefined()          
             done();
@@ -35,7 +37,6 @@ describe('dto validation middleware', ()=>{
                 email: 'dummy@test.com'
             }
         }
-        const requestHandlerFn = dtoValidationMiddleware(CreateUserDto, false)
         requestHandlerFn(req as Request, res as Response, next as NextFunction).then(message => {
             expect(message).toEqual('username must contain only letters and numbers')
             done();
@@ -50,7 +51,6 @@ describe('dto validation middleware', ()=>{
                 email: 'dummytest.com'
             }
         }
-        const requestHandlerFn = dtoValidationMiddleware(CreateUserDto, false)
         requestHandlerFn(req as Request, res as Response, next as NextFunction).then(message => {
             expect(message).toEqual('email must be an email')      
             done();
@@ -65,10 +65,25 @@ describe('dto validation middleware', ()=>{
                 email: 'dummytest.com'
             }
         }
-        const requestHandlerFn = dtoValidationMiddleware(CreateUserDto, false)
         requestHandlerFn(req as Request, res as Response, next as NextFunction).then(message => {
             expect(message).toEqual('username must contain only letters and numbers, password must be longer than or equal to 8 characters, email must be an email')    
             done();
+        })
+    })
+
+    it('property not present in dto => should be error', (done) => {
+        req = {
+            body: {
+                username: 'dummyUsername',
+                password: 'dummyPassword',
+                email: 'dummy@test.com',
+                salt: '123'
+            }
+        }
+
+        requestHandlerFn(req as Request, res as Response, next as NextFunction).then(message => {
+            expect(message).toEqual('property salt should not exist')
+            done()
         })
     })
     
