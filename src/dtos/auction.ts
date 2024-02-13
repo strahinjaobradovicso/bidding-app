@@ -7,4 +7,7 @@ export class CreateAuctionDto {
     
     @IsNumber()
     declare itemId: number;
+
+    @IsNumber()
+    declare startingBid: number;
 }

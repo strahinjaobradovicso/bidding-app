@@ -1,9 +1,7 @@
 import DB from "../../database"
 import { UserModel } from "../../database/models/user"
 import { CreateUserDto } from "../../dtos/user"
-import { UserService } from "../../services/UserService"
-
-const userService = new UserService()
+import { userService } from "../../services/UserService"
 
 describe('user service', () => {
 

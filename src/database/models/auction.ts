@@ -18,10 +18,11 @@ export interface AuctionModel extends
     {
         id: CreationOptional<number>,
         start: Date,
-        lastBid: number,
+        lastBid?: number,
         status: AuctionStatus,
         itemId: number,
-        userId: number
+        userId?: number,
+        startingBid: number
 }
 
 type AuctionModelAttributes = InferAttributes<AuctionModel, { omit:'itemId' | 'userId' }>
@@ -52,6 +53,10 @@ const initAuction = (sequelize: Sequelize)=>{
             status:{
                 type: DataTypes.ENUM(...Object.values(AuctionStatus)),
                 defaultValue: AuctionStatus.Upcoming,
+                allowNull: false
+            },
+            startingBid:{
+                type: DataTypes.DOUBLE,
                 allowNull: false
             }
         },

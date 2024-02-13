@@ -1,7 +1,5 @@
-import { AuctionService } from "../../services/AuctionService"
 import { SCHEDULE_TO_START_MIN_DAYS } from "../../services/AuctionService"
-
-const auctionService = new AuctionService()
+import { auctionService } from "../../services/AuctionService"
 
 describe('auction service', () => {
 

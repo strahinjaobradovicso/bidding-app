@@ -1,12 +1,20 @@
 import DB from "../database";
 import { BidModel } from "../database/models/bid";
 import { CreateBidDto } from "../dtos/bid";
+import { HttpException } from "../exceptions/httpException";
 
-export class BidService {
-    private dbBid = DB.Bid;
+const dbBid = DB.Bid;
 
-    async createBid(bidData: CreateBidDto): Promise<BidModel> {
-        const bid = await this.dbBid.create(bidData);
-        return bid;
+const createBid = async (bidData: CreateBidDto): Promise<BidModel> => {
+    let bid;
+    try {
+        bid = await dbBid.create(bidData);
+    } catch (error) {
+        throw new HttpException(500);
     }
+    return bid;
+}
+
+export const bidService = {
+    createBid
 }
