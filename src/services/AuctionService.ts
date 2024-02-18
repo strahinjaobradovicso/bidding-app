@@ -41,6 +41,14 @@ const createAuction = async (auctionData: CreateAuctionDto): Promise<AuctionMode
     return auction;
 }
 
+const findAuctionById = async (auctionId: number): Promise<AuctionModel> => {
+    const auction = await dbAuction.findByPk(auctionId);
+    if(!auction){
+        throw new HttpException(404, 'Auction not found')
+    }
+    return auction;
+} 
+
 const findAllByDate = async (date: Date): Promise<AuctionModel[]> => {
     return dbAuction.findAll({where:{start:date}})
 }
@@ -48,5 +56,6 @@ const findAllByDate = async (date: Date): Promise<AuctionModel[]> => {
 export const auctionService = {
     isStartTimeValid,
     createAuction,
+    findAuctionById,
     findAllByDate
 }

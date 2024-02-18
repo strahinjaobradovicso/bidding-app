@@ -1,4 +1,4 @@
-import { AddSuffix } from "./mixinSuffix";
+import { AddSuffix } from "../../util/addSufix";
 import { 
     BelongsToGetAssociationMixin,
     BelongsToSetAssociationMixin,
