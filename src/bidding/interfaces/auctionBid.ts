@@ -1,9 +1,9 @@
 export interface AuctionBid {
-    minValue: number
-    startingValue: number
-    askValue: number
-    reachedValue?: number
-    increment: number
-    userId?: number
-    time: number
+    auctionStart: Date,
+    auctionEnd: Date,
+    auctionExtraTime: number,
+    startingValue: number,
+    extendAuction: boolean,
+    askValue: number,
+    increment: number,
 }
