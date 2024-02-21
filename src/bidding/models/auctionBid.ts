@@ -23,8 +23,8 @@ export class AuctionBid {
         const increment = this.auctionRules.startingBid * this.auctionRules.bidIncrement;
         this._askValue = v + increment;
 
-        const diff = diffByUnit(new Date(), this.auctionRules.auctionEnd, TimeUnit.Seconds);
-        if(diff <= this.auctionRules.auctionExtraTime){
+        const diff = diffByUnit(new Date(), this.auctionRules.end, TimeUnit.Seconds);
+        if(diff <= this.auctionRules.extraTimeSec){
             this.extendAuction = true;
             this.auctionRules.extendAuction()
         }
@@ -32,7 +32,7 @@ export class AuctionBid {
 
     public toDto(includeRules: boolean): AuctionBidDto {
         const auctionBidDto = {
-            askValue: this.askValue,
+            askValue: this._askValue,
             extendAuction: this.extendAuction,
             auctionRules: includeRules ? this.auctionRules : undefined
         }
