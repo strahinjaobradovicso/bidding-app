@@ -1,4 +1,5 @@
 import { AuctionBid } from "../bidding/interfaces/auctionBid";
+import { TimeUnit, diffByUnit } from "../bidding/util/diffByUnit";
 import DB from "../database";
 import { AuctionModel, AuctionStatus } from "../database/models/auction";
 import { CreateAuctionDto } from "../dtos/auction";
@@ -11,9 +12,7 @@ const dbAuction = DB.Auction;
 
 const isStartTimeValid = (start: Date): boolean => {
     let now = new Date()
-    let diff = start.getTime() - now.getTime()
-    let daysDiff = Math.round(diff/1000*3600*24)
-
+    const daysDiff = diffByUnit(now, start, TimeUnit.Days);
     if(daysDiff < SCHEDULE_TO_START_MIN_DAYS) {
         return false;
     }
