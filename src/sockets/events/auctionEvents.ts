@@ -1,4 +1,4 @@
-import { AuctionBid } from "../../bidding/interfaces/auctionBid";
+import { AuctionBidDto } from "../../bidding/dtos/auctionBidDto";
 import { AddSuffix } from "../../util/addSufix";
 import { EventResponse } from "./eventResponse";
 
@@ -12,8 +12,8 @@ export type ToServerEvents = AddSuffix<
 
 export type ToClientEvents = AddSuffix<
     {
-        enterAuction: (auctionBid: AuctionBid | void, res: EventResponse) => void,
-        placeBid: (auctionKey: string, newAskBid: AuctionBid | void, res: EventResponse) => void
+        enterAuction: (auctionKey: string, auctionBid: AuctionBidDto | void, res: EventResponse) => void,
+        placeBid: (auctionKey: string, newAskBid: AuctionBidDto | void, res: EventResponse) => void
     },
     'ToClient'
 >
