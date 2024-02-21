@@ -13,11 +13,6 @@ const scheduleNewAuction = async (req: Request, res: Response, next: NextFunctio
     }
 }
 
-const enterAuction = (req: Request, res: Response, next: NextFunction) => {
-
-}
-
 export const auctionController = {
-    scheduleNewAuction,
-    enterAuction
+    scheduleNewAuction
 }
