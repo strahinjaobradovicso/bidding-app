@@ -1,4 +1,4 @@
-import { AuctionBidDto } from "../dtos/auctionBidDto";
+import { BidToClient } from "../dtos/bidToClient";
 import { TimeUnit, diffByUnit } from "../util/diffByUnit";
 import { AuctionRules } from "./auctionRules";
 
@@ -30,7 +30,7 @@ export class AuctionBid {
         }
     }
 
-    public toDto(includeRules: boolean): AuctionBidDto {
+    public toDto(includeRules: boolean): BidToClient {
         const auctionBidDto = {
             askValue: this._askValue,
             extendAuction: this.extendAuction,

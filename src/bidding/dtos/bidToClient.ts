@@ -1,6 +1,6 @@
 import { AuctionRules } from "../models/auctionRules";
 
-export interface AuctionBidDto {
+export interface BidToClient {
     extendAuction: boolean;
     askValue: number;
     auctionRules?: AuctionRules
