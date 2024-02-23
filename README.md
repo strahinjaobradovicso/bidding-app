@@ -12,7 +12,7 @@ A real-time bidding app using Express, CRON jobs and Socket.io.
 - two-way communication link.
 
 ## Bidding in real time
-Since this is a real-time application, latency during bidding must be minimal.
+Since this is a real-time application, latency during bidding must be minimal.\
 Reading the last bid from disk is not fast enough.\
 Express server stores key-value pairs in memory, where the key is the auction ID and the value is the last bid.\
 Because of this and the way the event loop works, there are no race conditions.
