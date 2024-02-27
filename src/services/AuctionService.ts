@@ -1,7 +1,6 @@
-import { AuctionBid } from "../bidding/interfaces/auctionBid";
 import { TimeUnit, diffByUnit } from "../bidding/util/diffByUnit";
 import DB from "../database";
-import { AuctionModel, AuctionStatus } from "../database/models/auction";
+import { AuctionModel } from "../database/models/auction";
 import { CreateAuctionDto } from "../dtos/auction";
 import { HttpException } from "../exceptions/httpException";
 import { itemService } from "./ItemService";

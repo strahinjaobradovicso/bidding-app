@@ -1,5 +1,4 @@
-import { AuctionBid } from "../interfaces/auctionBid";
-import { TimeUnit, diffByUnit } from "../util/diffByUnit";
+import { AuctionBid } from "../models/auctionBid";
 
 const bids = new Map<string, AuctionBid>;
 
@@ -22,16 +21,7 @@ export const bidStoreClient: BidStoreService = {
     },
     placeBid: (key: string, value: number) => {
         const auctionBid = bidStoreClient.getBid(key);
-        if(value >= auctionBid.askValue){
-            auctionBid.askValue = value + auctionBid.startingValue * auctionBid.increment;
-            const diff = diffByUnit(new Date(), auctionBid.auctionEnd, TimeUnit.Seconds);
-            if(diff <= auctionBid.auctionExtraTime){
-                auctionBid.extendAuction = true;
-            }
-        }
-        else{
-            throw new Error('bid rejected')
-        }
+        auctionBid.askValue = value;
         return auctionBid;
     }
 }
