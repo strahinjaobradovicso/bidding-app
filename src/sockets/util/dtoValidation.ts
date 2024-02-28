@@ -23,7 +23,6 @@ const dtoValidation = async (type: any, data: any) => {
                     return error;
                 }
             }).join(', ')
-            // next(new EventResponse(EventStatus.Failure, message));
             return message;
         }
         else{

@@ -1,7 +1,7 @@
 import { BidToClient } from "../../bidding/dtos/bidToClient";
 import { BidToServer } from "../../bidding/dtos/bidToServer";
 import { AddSuffix } from "../../util/addSufix";
-import { EventResponse } from "./eventResponse";
+import { EventResponse } from "../response/eventResponse";
 
 export type ToServerEvents = AddSuffix<
     {

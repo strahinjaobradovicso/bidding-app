@@ -1,12 +1,12 @@
 import { Socket } from "socket.io";
 import { SocketHandler } from "../multiplexing/socketHandler";
 import { ToClientEvents, ToServerEvents } from "../events/auctionEvents";
-import { EventResponse, EventStatus } from "../events/eventResponse";
+import { EventResponse, EventStatus } from "../response/eventResponse";
 import { bidStoreClient } from "../../bidding/service";
 import { BidToClient } from "../../bidding/dtos/bidToClient";
 import { AuctionBid } from "../../bidding/models/auctionBid";
 import { BidToServer } from "../../bidding/dtos/bidToServer";
-import dtoValidation from "../middlewares/dtoValidationMiddleware";
+import dtoValidation from "../util/dtoValidation";
 import { EventException } from "../exceptions/eventException";
 import socketErrorHandler from "../exceptions/errorHandler";
 

@@ -1,7 +1,7 @@
 import { Socket } from "socket.io";
 import { EventException } from "./eventException";
 import { ToClientEvents, ToServerEvents } from "../events/auctionEvents";
-import { EventResponse, EventStatus } from "../events/eventResponse";
+import { EventResponse, EventStatus } from "../response/eventResponse";
 
 const socketErrorHandler = (socket: Socket<ToServerEvents, ToClientEvents>, event:any, error: any) => {
 
