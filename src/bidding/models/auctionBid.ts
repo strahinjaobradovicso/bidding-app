@@ -1,3 +1,4 @@
+import { EventException } from "../../sockets/exceptions/eventException";
 import { BidToClient } from "../dtos/bidToClient";
 import { TimeUnit, diffByUnit } from "../util/diffByUnit";
 import { AuctionRules } from "./auctionRules";
@@ -17,7 +18,7 @@ export class AuctionBid {
     public set askValue(v : number) {
 
         if(v < this._askValue){
-            throw new Error('invalid bid value');
+            throw new EventException('invalid bid value');
         }
         
         const increment = this.auctionRules.startingBid * this.auctionRules.bidIncrement;

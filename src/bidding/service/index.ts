@@ -1,3 +1,4 @@
+import { EventException } from "../../sockets/exceptions/eventException";
 import { AuctionBid } from "../models/auctionBid";
 
 const bids = new Map<string, AuctionBid>;
@@ -15,7 +16,7 @@ export const bidStoreClient: BidStoreService = {
     getBid: (key: string) => {
         const auctionBid = bids.get(key);
         if(!auctionBid){
-            throw new Error('auction bid not found');
+            throw new EventException('auction is not active');
         }
         return auctionBid;
     },
