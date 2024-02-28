@@ -8,11 +8,13 @@ export class AuctionBid {
     public auctionRules: AuctionRules;
     public extendAuction: boolean;
     private _askValue: number;
+    private _reachedValue: number;
 
     constructor(auctionRules: AuctionRules) {
         this.auctionRules = auctionRules;
         this.extendAuction = false;
         this._askValue = auctionRules.startingBid;
+        this._reachedValue = 0;
     }
 
     public set askValue(v : number) {
@@ -31,6 +33,15 @@ export class AuctionBid {
         }
     }
 
+    
+    public set reachedValue(v: number) {
+        this._reachedValue = v;
+    }
+
+    public get reachedValue() : number {
+        return this._reachedValue;
+    }
+    
     public toDto(includeRules: boolean): BidToClient {
         const auctionBidDto = {
             askValue: this._askValue,
