@@ -6,7 +6,9 @@ import { bidStoreClient } from "../../bidding/service";
 import { BidToClient } from "../../bidding/dtos/bidToClient";
 import { AuctionBid } from "../../bidding/models/auctionBid";
 import { BidToServer } from "../../bidding/dtos/bidToServer";
-import dtoValidationMiddleware from "../middlewares/dtoValidationMiddleware";
+import dtoValidation from "../middlewares/dtoValidationMiddleware";
+import { EventException } from "../exceptions/eventException";
+import socketErrorHandler from "../exceptions/errorHandler";
 
 export class AuctionHandler implements SocketHandler {
 
@@ -16,38 +18,38 @@ export class AuctionHandler implements SocketHandler {
                 await socket.join(`${auctionId}`)
                 const auctionBid: AuctionBid = bidStoreClient.getBid(auctionId);
                 const auctionBidDto: BidToClient = auctionBid.toDto(true);
-                socket.emit('enterAuctionToClient', auctionId, auctionBidDto, new EventResponse(EventStatus.Success));
+                socket.emit('enterAuctionToClient', new EventResponse(EventStatus.Success), auctionId, auctionBidDto);
             } catch (error) {
-                socket.emit('enterAuctionToClient', auctionId, undefined, new EventResponse(EventStatus.Failure));
+                socketErrorHandler(socket, 'enterAuctionToClient', error);
             }
         })
         socket.on('placeBidToServer', async (data: BidToServer) => {
             try {
+
+                const errors = await dtoValidation(BidToServer, data);
+
+                if(errors){
+                    throw new EventException(errors);
+                }
+
                 const newAskBid = bidStoreClient.placeBid(data.auctionId, Number(data.value));
                 const newAskBidDto: BidToClient = newAskBid.toDto(false);
 
                 socket
-                .emit('placeBidToClient', data.auctionId, newAskBidDto, new EventResponse(EventStatus.Success));
+                .emit('placeBidToClient', new EventResponse(EventStatus.Success), data.auctionId, newAskBidDto);
 
                 socket.to(data.auctionId)
-                .emit('placeBidToClient', data.auctionId, newAskBidDto, new EventResponse(EventStatus.Success));
+                .emit('placeBidToClient', new EventResponse(EventStatus.Success), data.auctionId, newAskBidDto);
 
             } catch (error) {
-                socket.emit('placeBidToClient', data.auctionId, undefined, new EventResponse(EventStatus.Failure));
+                socketErrorHandler(socket, 'placeBidToClient', error);
             }
         })
     }
 
     middlewareImplementation(socket: Socket<ToServerEvents, ToClientEvents>, next: any): void {
 
-        socket.on('placeBidToServer', (bid) => {
-            const validator = dtoValidationMiddleware(BidToServer, bid);
-            validator(next);
-        });
-
-
         next();
-        
     }
 
 }

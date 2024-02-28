@@ -1,36 +1,34 @@
 import { plainToInstance } from "class-transformer";
 import { ValidationError, validate } from "class-validator";
-import { EventResponse, EventStatus } from "../events/eventResponse";
 
-const dtoValidationMiddleware = (type: any, data: any) => {
-    return async (next: any) => {
-        const obj = plainToInstance(type, data);
-        console.log(obj);
+const dtoValidation = async (type: any, data: any) => {
+    
+    const obj = plainToInstance(type, data);
 
-        const skipMissingProperties = false;
-        const whitelist = false;
-        const forbidNonWhitelisted = true;
-        const errors:ValidationError[] = await validate(obj, 
-            {skipMissingProperties, whitelist, forbidNonWhitelisted});
+    const skipMissingProperties = false;
+    const whitelist = false;
+    const forbidNonWhitelisted = true;
 
-            let message;
+    const errors:ValidationError[] = await validate(obj, 
+        {skipMissingProperties, whitelist, forbidNonWhitelisted});
 
-            if(errors.length > 0){
-                message = errors.map((error: ValidationError) => {
-                    if(error.constraints){
-                        return Object.values(error.constraints);
-                    }
-                    else{
-                        return error;
-                    }
-                }).join(', ')
-                console.log(message);
-                next(new EventResponse(EventStatus.Failure, message));
-            }
-            else{
-                next();
-            }
+        let message;
 
-    }
+        if(errors.length > 0){
+            message = errors.map((error: ValidationError) => {
+                if(error.constraints){
+                    return Object.values(error.constraints);
+                }
+                else{
+                    return error;
+                }
+            }).join(', ')
+            // next(new EventResponse(EventStatus.Failure, message));
+            return message;
+        }
+        else{
+            return null;
+        }
+
 }
-export default dtoValidationMiddleware;
+export default dtoValidation;

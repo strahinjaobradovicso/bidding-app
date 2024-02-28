@@ -13,8 +13,8 @@ export type ToServerEvents = AddSuffix<
 
 export type ToClientEvents = AddSuffix<
     {
-        enterAuction: (auctionKey: string, auctionBid: BidToClient | void, res: EventResponse) => void,
-        placeBid: (auctionKey: string, newAskBid: BidToClient | void, res: EventResponse) => void
+        enterAuction: (res: EventResponse, auctionKey?: string, auctionBid?: BidToClient) => void,
+        placeBid: (res: EventResponse, auctionKey?: string, newAskBid?: BidToClient) => void
     },
     'ToClient'
 >
