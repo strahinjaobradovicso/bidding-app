@@ -8,13 +8,19 @@ export class AuctionBid {
     public auctionRules: AuctionRules;
     public extendAuction: boolean;
     private _askValue: number;
-    private _reachedValue: number;
+    public reachedValue: number;
+    public time: Date;
+    public itemPrice: number;
+    public increment: number;
 
-    constructor(auctionRules: AuctionRules) {
+    constructor(auctionRules: AuctionRules, itemPrice: number) {
         this.auctionRules = auctionRules;
         this.extendAuction = false;
         this._askValue = auctionRules.startingBid;
-        this._reachedValue = 0;
+        this.reachedValue = 0;
+        this.time = new Date()
+        this.itemPrice = itemPrice;
+        this.increment = auctionRules.bidIncrement;
     }
 
     public set askValue(v : number) {
@@ -22,9 +28,12 @@ export class AuctionBid {
         if(v < this._askValue){
             throw new EventException('invalid bid value');
         }
-        
-        const increment = this.auctionRules.startingBid * this.auctionRules.bidIncrement;
-        this._askValue = v + increment;
+
+        this.reachedValue = v;
+        this.time = new Date();
+
+        const step = this.itemPrice * this.increment;
+        this._askValue = v + step;
 
         const diff = diffByUnit(new Date(), this.auctionRules.end, TimeUnit.Seconds);
         if(diff <= this.auctionRules.extraTimeSec){
@@ -33,13 +42,16 @@ export class AuctionBid {
         }
     }
 
-    
-    public set reachedValue(v: number) {
-        this._reachedValue = v;
-    }
+    public lowerAskValue(): number | null {
+        const startingIncrement = this.auctionRules.bidIncrement;
 
-    public get reachedValue() : number {
-        return this._reachedValue;
+        if(this.increment === startingIncrement  ||
+            (this.itemPrice >= 10000 && this.increment >= startingIncrement/2)){
+            this.increment /= 2;
+            this._askValue -= this.increment * this.itemPrice;
+            return this._askValue;
+        }
+        return null;
     }
     
     public toDto(includeRules: boolean): BidToClient {
