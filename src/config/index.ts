@@ -14,6 +14,6 @@ export const {
     DB_HOST,
     DB_PORT,
     DB_DIALECT,
-    AUCTION_KEY_HEADER
+    JWT_SECRET
 } = process.env
 
