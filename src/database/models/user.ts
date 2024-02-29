@@ -50,10 +50,7 @@ const initUser = (sequelize: Sequelize)=>{
         {
             tableName: 'users',
             underscored:true,
-            sequelize,
-            defaultScope: {
-                attributes: {exclude:['password', 'salt']}
-            }
+            sequelize
         }
     )
 
