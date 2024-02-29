@@ -3,7 +3,7 @@ import { AuctionStatus } from "../models/auction";
 const dummyAuctions = [
     {
         start: addMinutes(new Date(), 1),
-        last_bid: 200,
+        last_bid: 0,
         status: AuctionStatus.Upcoming,
         item_id:1,
         user_id:null,
@@ -13,7 +13,7 @@ const dummyAuctions = [
     },
     {
         start: addMinutes(new Date(), 2),
-        last_bid: 1800,
+        last_bid: 0,
         status: AuctionStatus.Upcoming,
         item_id:2,
         user_id:null,

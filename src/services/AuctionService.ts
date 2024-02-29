@@ -51,9 +51,15 @@ const findAllByDate = async (date: Date): Promise<AuctionModel[]> => {
     return dbAuction.findAll({where:{start:date}})
 }
 
+const findAll = async (): Promise<AuctionModel[]> => {
+    return dbAuction.findAll()
+}
+
+
 export const auctionService = {
     isStartTimeValid,
     createAuction,
     findAuctionById,
-    findAllByDate
+    findAllByDate,
+    findAll
 }

@@ -1,5 +1,5 @@
 import { EventException } from "../../sockets/exceptions/eventException";
-import { SocketServer } from "../../sockets/socketServer";
+import { auctionNotification } from "../../sockets/notifications/auctionNotification";
 import { AuctionBid } from "../models/auctionBid";
 import { TimeUnit, diffByUnit } from "../util/diffByUnit";
 
@@ -30,16 +30,14 @@ export const bidStoreClient: BidStoreService = {
         return auctionBid;
     },
     clearAuctions: () => {
-        const io = SocketServer.getInstance();
 
         for(const [key, bid] of bids){
-            io.of('/auction').to(key).emit("auctionResult", bid.reachedValue);
+            auctionNotification.auctionResult(key, bid.reachedValue);
         }
 
         bids.clear();  
     },
     lowerAskBid: (interval: number) => {
-        const io = SocketServer.getInstance();
 
         const auctionsToClose = []
 
@@ -49,7 +47,7 @@ export const bidStoreClient: BidStoreService = {
             if(diffByUnit(lastBidTime, now, TimeUnit.Seconds) >= interval){
                 const lowerAsk = bid.lowerAskValue();
                 if(lowerAsk){
-                    io.of('/auction').to(key).emit("loweredAskBid", lowerAsk);
+                    auctionNotification.loweredAskBid(key, lowerAsk);
                 }
                 else{
                     auctionsToClose.push(key);
@@ -57,7 +55,7 @@ export const bidStoreClient: BidStoreService = {
             }
         }   
         for (const key of auctionsToClose) {
-            io.of('/auction').to(key).emit("auctionResult", bids.get(key));
+            auctionNotification.auctionResult(key, bids.get(key)!.reachedValue);
             bids.delete(key);
         }
     },

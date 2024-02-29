@@ -7,6 +7,7 @@ import DB from './database';
 import http from 'http';
 import { SocketServer } from './sockets/socketServer';
 import { AuctionHandler } from './sockets/handlers/auctionHandler';
+import { auctionScheduler } from './scheduler/auctionScheduler';
 
 class Server {
     app: express.Application;
@@ -50,6 +51,7 @@ class Server {
             const httpServer = http.createServer(this.app)
             this.initIO(httpServer);
             httpServer.listen(this.port)
+            auctionScheduler.init()
         } catch (error) {
             console.log(error)
         }

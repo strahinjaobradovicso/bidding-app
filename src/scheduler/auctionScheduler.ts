@@ -7,7 +7,7 @@ import { AuctionRules } from "../bidding/models/auctionRules";
 
 const SET_AUCTIONS = "0 0 * * * *";
 const CLEAR_AUCTIONS = "0 1 * * * *";
-const SILENT_INTERVAL = 10000
+const SILENT_INTERVAL_SEC = 10
 const SILENT_CHECKS = [
     "10 0 * * * *",
     "20 0 * * * *",
@@ -26,7 +26,7 @@ const init = () => {
 
     for (const check of SILENT_CHECKS) {
         const silentChecks = nodeCron.schedule(check, () => {
-            bidStoreClient.lowerAskBid(SILENT_INTERVAL);
+            bidStoreClient.lowerAskBid(SILENT_INTERVAL_SEC);
         })
     }
 

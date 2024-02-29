@@ -1,7 +1,7 @@
 const dummyItems = [
     {
         title:"Rustic Chair",
-        price:120.5,
+        price:200,
         description:"Almost new... A rarity",
         user_id:1,
         created_at: new Date(),
@@ -9,7 +9,7 @@ const dummyItems = [
     },
     {
         title:"Anvil",
-        price:120.5,
+        price:1800,
         description:"Used for hammering curved pieces of metal",
         user_id:2,
         created_at: new Date(),
