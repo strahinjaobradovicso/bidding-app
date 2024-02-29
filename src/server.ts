@@ -8,19 +8,20 @@ import http from 'http';
 import { SocketServer } from './sockets/socketServer';
 import { AuctionHandler } from './sockets/handlers/auctionHandler';
 import { auctionScheduler } from './scheduler/auctionScheduler';
+import { Routes } from './routes/interfaces/route';
 
 class Server {
     app: express.Application;
     port: string | number;
     env: string;
 
-    constructor(){
+    constructor(routes: Routes[]){
         this.app = express();
         this.port = PORT || 3000;
         this.env = NODE_ENV || 'dev' 
 
         this.initMiddlewares()
-        this.initRoutes()
+        this.initRoutes(routes)
         this.initErrorMiddleware()
     }
 
@@ -30,8 +31,10 @@ class Server {
         this.app.use(bodyParser.json())
     }
 
-    private initRoutes(){
-        
+    private initRoutes(routes: Routes[]){
+        for (const route of routes) {
+            this.app.use('/', route.router);
+        }
     }
 
     public initErrorMiddleware(){
