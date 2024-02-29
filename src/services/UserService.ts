@@ -2,54 +2,46 @@ import DB from "../database";
 import { UserModel } from "../database/models/user";
 import { CreateUserDto } from "../dtos/user";
 import { HttpException } from "../exceptions/httpException";
-import * as crypto from 'crypto';
+import { saltAndHash } from "./util/saltAndHash";
 
+export class UserService {
 
-const dbUser = DB.User;
+    private dbUser = DB.User;
 
-const findByUniqueProperty = async (property: string, userData: CreateUserDto): Promise<UserModel | null> => {
-    const user = await dbUser.findOne({where:{[property]: userData[property as keyof CreateUserDto]}})
-    return user;
-}
-
-const createUser = async (userData: CreateUserDto): Promise<UserModel> => {
+    public createUser = async (userData: CreateUserDto): Promise<UserModel> => {
         
-    let userProperties = DB.User.getAttributes()    
-    const errors = []
-
-    for(const property of Object.entries(userProperties)){
-        const propertyKey = property[0]
-        const propertyValue = property[1]
-
-        if(propertyValue.unique === true){
-            const findUser = await findByUniqueProperty(propertyKey, userData);
-            if(findUser){
-                errors.push(`${propertyKey} already exists`)
+        let userProperties = DB.User.getAttributes()    
+        const errors = []
+    
+        for(const property of Object.entries(userProperties)){
+            const propertyKey = property[0]
+            const propertyValue = property[1]
+    
+            if(propertyValue.unique === true){
+                const findUser = await this.findByUniqueProperty(propertyKey, userData);
+                if(findUser){
+                    errors.push(`${propertyKey} already exists`)
+                }
             }
         }
-    }
 
-    if(errors.length > 0){
-        throw new HttpException(409, errors.join(', '));
-    }
-
-
-    try {
-        const salt = crypto.randomBytes(16).toString('hex')
-        userData.password = crypto.pbkdf2Sync(userData.password, 
-            salt, 1000, 64, 'sha512').toString('hex')
+        if(errors.length > 0){
+            throw new HttpException(409, errors.join(', '));
+        }
+        
+        const {salt , hashedPassword} = saltAndHash(userData.password);
+        userData.password = hashedPassword;
         
         let userWithSalt = {...userData, salt};
-        await dbUser.create(userWithSalt);    
-    } catch (error) {
-        throw new HttpException(500)
+        await this.dbUser.create(userWithSalt);    
+    
+        const user = await this.dbUser.findOne({where: {username: userData.username}})
+        return user!;
     }
 
-    const user = await dbUser.findOne({where: {username: userData.username}})
-
-    return user!;
-}
-
-export const userService = {
-    createUser
+    public findByUniqueProperty = async (property: string, userData: CreateUserDto): Promise<UserModel | null> => {
+        const user = await this.dbUser.findOne({where:{[property]: userData[property as keyof CreateUserDto]}})
+        return user;
+    }
+    
 }
