@@ -1,31 +1,26 @@
 import { NextFunction, Request, Response } from "express";
+import { TokenRequest } from "../ambient/request";
 import { HttpException } from "../exceptions/httpException";
 
-const isOwnerMiddleware = (model: any, modelIdParamName:string = 'id') => {
+export const isOwnerMiddleware = (model: any, modelIdParamName:string = 'id') => {
+
     return async (req: Request, res: Response, next: NextFunction) => {
+
         const modelData = await model.findByPk(req.params[modelIdParamName]);
-        if(modelData.userId === req.userId){
+        if(!modelData){
+            return next(new HttpException(404, 'resource not found'));
+        }
+
+        const token = (req as TokenRequest).token;
+        if(!token){
+            return next(new Error('request missing token'));
+        }
+
+        if(modelData.userId === token.userId){
             next();
         }
         else{
-            next(new HttpException(500));
+            next(new Error('not the owner'));
         }
     }
-}
-
-const setOwnerMiddleware = () => {
-    return (req: Request, res: Response, next: NextFunction) => {
-        if(!req.userId){
-            next(new HttpException(500));
-        }
-        else {
-            req.body.userId = req.userId;
-            next();
-        }
-    }
-}
-
-export const ownerMiddleware = {
-    isOwnerMiddleware,
-    setOwnerMiddleware
 }
