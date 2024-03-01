@@ -21,17 +21,17 @@ export class AuctionRoute implements Routes {
     
     private initRoutes(){
         this.router.post(`${this.path}`, 
-        authMiddleware,
+        authMiddleware(),
         dtoValidationMiddleware(CreateAuctionDto),
         this.auctionController.scheduleNewAuction);
 
         this.router.delete(`${this.path}/:auctionId`,
-        authMiddleware,
+        authMiddleware(),
         isOwnerMiddleware(AuctionModel, 'auctionId'),
         this.auctionController.cancelAuction);
 
         this.router.put(`${this.path}/:auctionId`, 
-        authMiddleware,
+        authMiddleware(),
         isOwnerMiddleware(AuctionModel, 'auctionId'),
         dtoValidationMiddleware(CreateAuctionDto),
         this.auctionController.updateAuction);
