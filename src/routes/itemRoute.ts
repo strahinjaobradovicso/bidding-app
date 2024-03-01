@@ -3,7 +3,7 @@ import { Routes } from "./interfaces/route";
 import { ItemController } from "../controllers/itemController";
 import dtoValidationMiddleware from "../middlewares/dtoValidationMiddleware";
 import { CreateItemDto } from "../dtos/item";
-import { isOwnerMiddleware } from "../middlewares/ownerMiddleware";
+import { isOwnerMiddleware, setOwnerMiddleware } from "../middlewares/ownerMiddleware";
 import { ItemModel } from "../database/models/item";
 import { authMiddleware } from "../middlewares/authMiddleware";
 
@@ -21,7 +21,10 @@ export class ItemRoute implements Routes {
     private initRoutes(){
         this.router.post(`${this.path}`,
         authMiddleware(),
-        dtoValidationMiddleware(CreateItemDto), this.itemController.storeItem);
+        dtoValidationMiddleware(CreateItemDto),
+        setOwnerMiddleware('userId', 'body'),
+        this.itemController.storeItem
+        );
         
         this.router.delete(`${this.path}/:itemId`, 
         authMiddleware(),

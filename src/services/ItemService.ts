@@ -7,10 +7,10 @@ export class ItemService {
     
     private dbItem = DB.Item;
 
-    public createItem = async (itemData: CreateItemDto): Promise<ItemModel> => {
+    public createItem = async (userId: number, itemData: CreateItemDto): Promise<ItemModel> => {
         let item;
         try {
-            item = await this.dbItem.create(itemData);
+            item = await this.dbItem.create({...itemData, userId});
         } catch (error) {
             throw new HttpException(500)
         }

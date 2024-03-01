@@ -13,8 +13,9 @@ export class ItemController {
 
     public storeItem = async (req: Request, res: Response, next: NextFunction) => {
         try {
+            const owner:number = req.body.userId
             const itemData: CreateItemDto = req.body;
-            const storeItemData: ItemModel = await this.itemService.createItem(itemData);
+            const storeItemData: ItemModel = await this.itemService.createItem(owner, itemData);
             res.status(201).json({ data: storeItemData, message: 'item stored'});
         } catch (error) {
             next(error);
