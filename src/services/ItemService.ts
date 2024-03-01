@@ -29,4 +29,17 @@ export class ItemService {
         const item = await this.findItemById(itemId);
         await item.destroy()
     }
+
+    public updateItem = async (itemId: number, itemData: CreateItemDto): Promise<ItemModel> => {
+        const dbItem: ItemModel = await this.findItemById(itemId);
+
+        dbItem.title = itemData.title;
+        dbItem.price = itemData.price;
+        if(itemData.description)
+            dbItem.description = itemData.description;
+
+        const updatedItem = await dbItem.save();
+
+        return updatedItem;
+    }
 }

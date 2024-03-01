@@ -27,5 +27,11 @@ export class ItemRoute implements Routes {
         authMiddleware(),
         isOwnerMiddleware(ItemModel, 'itemId'),
         this.itemController.deleteItem);
+
+        this.router.put(`${this.path}/:itemId`,
+        authMiddleware(),
+        isOwnerMiddleware(ItemModel, 'itemId'),
+        dtoValidationMiddleware(CreateItemDto),
+        this.itemController.updateItem)
     }
 }

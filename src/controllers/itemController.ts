@@ -30,4 +30,15 @@ export class ItemController {
         }
     }
 
+    public updateItem = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const itemId = Number(req.params.itemId);
+            const itemData: CreateItemDto = req.body;
+            const updateItemData: ItemModel = await this.itemService.updateItem(itemId, itemData);
+            res.status(200).json({ data: updateItemData, message: 'item is updated' });
+        } catch (error) {
+            next(error);
+        }
+    }
+
 }
