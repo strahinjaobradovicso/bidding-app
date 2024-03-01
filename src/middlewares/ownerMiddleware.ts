@@ -24,3 +24,22 @@ export const isOwnerMiddleware = (model: any, modelIdParamName:string = 'id') =>
         }
     }
 }
+
+export const setOwnerMiddleware = (
+    userFkName: string = 'userId',
+    inside: 'body' | 'query' | 'params' = 'body',
+  ) => {
+    return (req: Request, res: Response, next: NextFunction) => {
+        const token = (req as TokenRequest).token;
+        if(!token || !token.userId){
+            throw new Error('missing user info');
+        }
+        if(inside === 'body'){
+            req[inside][userFkName] = token.userId;
+        }
+        else{
+            req[inside][userFkName] = token.userId.toString();
+        }
+        next();
+    }
+}
