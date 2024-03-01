@@ -7,6 +7,7 @@ import { AuthRoute } from "./routes/authRoute";
 import { Routes } from "./routes/interfaces/route";
 import { ItemRoute } from "./routes/itemRoute";
 import { UserRoute } from "./routes/userRoute";
+import { auctionScheduler } from "./scheduler/auctionScheduler";
 import Server from "./server";
 import { AuctionService } from "./services/AuctionService";
 import { AuthService } from "./services/AuthService";
@@ -26,5 +27,6 @@ const routes: Routes[] = [
 ]
 
 const app = new Server(routes)
+auctionScheduler.init(auctionService);
 
 app.start()

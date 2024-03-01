@@ -7,7 +7,6 @@ import DB from './database';
 import http from 'http';
 import { SocketServer } from './sockets/socketServer';
 import { AuctionHandler } from './sockets/handlers/auctionHandler';
-import { auctionScheduler } from './scheduler/auctionScheduler';
 import { Routes } from './routes/interfaces/route';
 
 class Server {
@@ -54,7 +53,6 @@ class Server {
             const httpServer = http.createServer(this.app)
             this.initIO(httpServer);
             httpServer.listen(this.port)
-            auctionScheduler.init()
         } catch (error) {
             console.log(error)
         }
