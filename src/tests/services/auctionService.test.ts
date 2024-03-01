@@ -1,7 +1,9 @@
-import { SCHEDULE_TO_START_MIN_DAYS } from "../../services/AuctionService"
-import { auctionService } from "../../services/AuctionService"
+import { AuctionService, SCHEDULE_TO_START_MIN_DAYS } from "../../services/AuctionService"
+import { ItemService } from "../../services/ItemService";
 
 describe('auction service', () => {
+
+    const auctionService = new AuctionService(new ItemService());
 
     it('start valid, return true', () => {
         const start = new Date()

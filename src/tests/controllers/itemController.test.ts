@@ -1,10 +1,13 @@
 import { NextFunction, Request, Response } from "express";
-import { itemController } from "../../controllers/itemController";
 import { CreateItemDto } from "../../dtos/item";
 import { HttpException } from "../../exceptions/httpException";
 import DB from "../../database";
+import { ItemController } from "../../controllers/itemController";
+import { ItemService } from "../../services/ItemService";
 
 describe('item controller', () => {
+
+    const itemController = new ItemController(new ItemService());
 
     afterAll(()=>{
         DB.sequelize.close();

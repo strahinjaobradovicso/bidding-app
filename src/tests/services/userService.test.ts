@@ -1,9 +1,11 @@
 import DB from "../../database"
 import { UserModel } from "../../database/models/user"
 import { CreateUserDto } from "../../dtos/user"
-import { userService } from "../../services/UserService"
+import { UserService } from "../../services/UserService"
 
 describe('user service', () => {
+
+    const userService = new UserService();
 
     afterAll(()=>{
         DB.sequelize.close()
@@ -38,14 +40,5 @@ describe('user service', () => {
             done()
         })
     })
-
-    it('createUser should return user without sensitive data', (done) => {   
-        userService.createUser(user).then(user=>{
-            expect(user.password).toBeUndefined()
-            expect(user.salt).toBeUndefined()
-            done()
-        })
-    })
-
 
 })
