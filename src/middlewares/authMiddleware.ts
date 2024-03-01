@@ -7,14 +7,14 @@ import { TokenRequest, TokenRequestPayload } from "../ambient/request";
 export const authMiddleware = () => {
 
     return (req: Request, res: Response, next: NextFunction) => {
-
-        const authHeader = req.get('Authorization');
+        
+        const authHeader = req.headers["authorization"];
 
         if(!authHeader){
-            throw new HttpException(401);
+            return next(new HttpException(401));
         }
         if(!JWT_SECRET){
-            throw new Error('undefined jwt secret key');
+            return next(new Error('undefined jwt secret key'));
         }
 
         const token = authHeader.split(' ')[1];
@@ -24,11 +24,11 @@ export const authMiddleware = () => {
         try {
             decodedToken = jwt.verify(token, JWT_SECRET)
         } catch (error) {
-            throw new HttpException(401, 'invalid token');
+            return next(new HttpException(401, 'invalid token'));
         }
 
         (req as TokenRequest).token = (decodedToken as TokenRequestPayload);
-
+       
         next();
     }
 }
