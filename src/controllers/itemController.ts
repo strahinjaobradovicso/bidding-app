@@ -13,8 +13,9 @@ export class ItemController {
 
     public storeItem = async (req: Request, res: Response, next: NextFunction) => {
         try {
+            const owner:number = req.body.userId
             const itemData: CreateItemDto = req.body;
-            const storeItemData: ItemModel = await this.itemService.createItem(itemData);
+            const storeItemData: ItemModel = await this.itemService.createItem(owner, itemData);
             res.status(201).json({ data: storeItemData, message: 'item stored'});
         } catch (error) {
             next(error);
@@ -25,6 +26,17 @@ export class ItemController {
         try {
             await this.itemService.deleteItem(Number(req.params.itemId));
             res.status(200).json({message: 'item is deleted'});
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    public updateItem = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const itemId = Number(req.params.itemId);
+            const itemData: CreateItemDto = req.body;
+            const updateItemData: ItemModel = await this.itemService.updateItem(itemId, itemData);
+            res.status(200).json({ data: updateItemData, message: 'item is updated' });
         } catch (error) {
             next(error);
         }

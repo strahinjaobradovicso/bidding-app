@@ -58,4 +58,31 @@ export class AuctionService {
         return this.dbAuction.findAll({where:{start:date}})
     }
 
+    public deleteAuction = async (auctionId: number): Promise<void> => {
+        const dbAuction = await this.findAuctionById(auctionId);
+        dbAuction.destroy()
+    }
+
+    public updateAuction = async (auctionId: number, auctionData: CreateAuctionDto): Promise<AuctionModel> => {
+        const dbAuction: AuctionModel = await this.findAuctionById(auctionId);
+
+        if(this.isStartTimeValid(auctionData.start)){
+            throw new HttpException(409, `auction start time is not valid`)
+        }
+
+        const auctionItem = await dbAuction.getItemModel();
+
+        if(auctionData.startingBid > auctionItem.price){
+            throw new HttpException(409, `starting bid must be less than or equal to the item's price`);
+        }
+
+        dbAuction.start = auctionData.start;
+        dbAuction.startingBid = auctionData.startingBid;
+
+        const updatedAuction = await dbAuction.save();
+
+        return updatedAuction;
+    }
+
+
 }

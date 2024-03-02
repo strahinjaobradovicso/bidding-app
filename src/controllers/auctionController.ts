@@ -20,5 +20,24 @@ export class AuctionController {
         }
     }
 
+    public cancelAuction = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            await this.auctionService.deleteAuction(Number(req.params.auctionId))
+            res.status(200).json({message: 'auction is deleted'});
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    public updateAuction = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const auctionId = Number(req.params.auctionId);
+            const auctionData: CreateAuctionDto = req.body;
+            const updateAuction: AuctionModel = await this.auctionService.updateAuction(auctionId, auctionData);
+            res.status(200).json({ data: updateAuction, message: 'auction is updated'});
+        } catch (error) {
+            next(error);
+        }
+    }
 
 }

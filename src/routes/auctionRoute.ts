@@ -1,8 +1,11 @@
 import { Router } from "express";
 import { Routes } from "./interfaces/route";
 import dtoValidationMiddleware from "../middlewares/dtoValidationMiddleware";
-import { CreateItemDto } from "../dtos/item";
 import { AuctionController } from "../controllers/auctionController";
+import { authMiddleware } from "../middlewares/authMiddleware";
+import { isOwnerMiddleware } from "../middlewares/ownerMiddleware";
+import { AuctionModel } from "../database/models/auction";
+import { CreateAuctionDto } from "../dtos/auction";
 
 export class AuctionRoute implements Routes {
 
@@ -18,9 +21,19 @@ export class AuctionRoute implements Routes {
     
     private initRoutes(){
         this.router.post(`${this.path}`, 
-        dtoValidationMiddleware(CreateItemDto),
+        authMiddleware(),
+        dtoValidationMiddleware(CreateAuctionDto),
         this.auctionController.scheduleNewAuction);
+
+        this.router.delete(`${this.path}/:auctionId`,
+        authMiddleware(),
+        isOwnerMiddleware(AuctionModel, 'auctionId'),
+        this.auctionController.cancelAuction);
+
+        this.router.put(`${this.path}/:auctionId`, 
+        authMiddleware(),
+        isOwnerMiddleware(AuctionModel, 'auctionId'),
+        dtoValidationMiddleware(CreateAuctionDto),
+        this.auctionController.updateAuction);
     }
-
-
 }
