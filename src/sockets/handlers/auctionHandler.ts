@@ -9,6 +9,7 @@ import { BidToServer } from "../../bidding/dtos/bidToServer";
 import dtoValidation from "../util/dtoValidation";
 import { EventException } from "../exceptions/eventException";
 import socketErrorHandler from "../exceptions/errorHandler";
+import { TokenRequest } from "../../ambient/request";
 
 export class AuctionHandler implements SocketHandler {
 
@@ -31,8 +32,9 @@ export class AuctionHandler implements SocketHandler {
                 if(errors){
                     throw new EventException(errors);
                 }
-
-                const newAskBid = bidStoreClient.placeBid(data.auctionId, Number(data.value));
+                const token = (socket.request as TokenRequest).token;
+                const userId = token.userId;
+                const newAskBid = bidStoreClient.placeBid(userId, data);
                 const newAskBidDto: BidToClient = newAskBid.toDto(false);
 
                 socket

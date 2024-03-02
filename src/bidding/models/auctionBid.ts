@@ -12,6 +12,7 @@ export class AuctionBid {
     public time: Date;
     public itemPrice: number;
     public increment: number;
+    public userId?: number;
 
     constructor(auctionRules: AuctionRules, itemPrice: number) {
         this.auctionRules = auctionRules;
@@ -56,8 +57,8 @@ export class AuctionBid {
     
     public toDto(includeRules: boolean): BidToClient {
         const auctionBidDto = {
+            userId: this.userId,
             askValue: this._askValue,
-            extendAuction: this.extendAuction,
             auctionRules: includeRules ? this.auctionRules : undefined
         }
         return auctionBidDto;

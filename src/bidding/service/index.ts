@@ -1,5 +1,6 @@
 import { EventException } from "../../sockets/exceptions/eventException";
 import { auctionNotification } from "../../sockets/notifications/auctionNotification";
+import { BidToServer } from "../dtos/bidToServer";
 import { AuctionBid } from "../models/auctionBid";
 import { TimeUnit, diffByUnit } from "../util/diffByUnit";
 
@@ -8,7 +9,7 @@ const bids = new Map<string, AuctionBid>;
 interface BidStoreService {
     setBid: (key: string, bid: AuctionBid) => void
     getBid: (key: string) => AuctionBid
-    placeBid: (key: string, value: number) => AuctionBid
+    placeBid: (userId: number, bid: BidToServer) => AuctionBid
     clearAuctions: () => void
     lowerAskBid: (interval: number) => void
 }
@@ -24,9 +25,13 @@ export const bidStoreClient: BidStoreService = {
         }
         return auctionBid;
     },
-    placeBid: (key: string, value: number) => {
+    placeBid: (userId: number, bid: BidToServer) => {
+        const key = bid.auctionId;
+        const value = bid.value;
+
         const auctionBid = bidStoreClient.getBid(key);
         auctionBid.askValue = value;
+        auctionBid.userId = userId;
         return auctionBid;
     },
     clearAuctions: () => {
