@@ -8,7 +8,4 @@ export class CreateBidDto {
 
     @IsNumber()
     declare auctionId: number;
-
-    @IsNumber()
-    declare userId: number;
 }
