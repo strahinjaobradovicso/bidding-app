@@ -1,7 +1,7 @@
 import { Server, Socket } from "socket.io";
-import { SocketChannel } from "./multiplexing/socketChannel";
 import { authMiddleware } from "../middlewares/authMiddleware";
 import { NextFunction, Request, Response } from "express";
+import { SocketHandler } from "./multiplexing/socketHandler";
 
 const SOCKET_CORS = {
     origin: '*'
@@ -24,16 +24,16 @@ export class SocketServer extends Server {
         return SocketServer.io;
     }
 
-    public initializeMiddlewares(){
+    private initializeMiddlewares(){
         this.engine.use(authMiddleware());
     }
 
-    public initializeHandlers(socketHandlers: Array<SocketChannel>) {
+    public initializeHandlers(socketHandlers: Array<SocketHandler>) {
         socketHandlers.forEach(element => {
             const namespace = SocketServer.io.of(element.path, (socket: Socket) => {
-                element.handler.handleConnection(socket);
+                element.handleConnection(socket);
             })
-            namespace.use(element.handler.middlewareImplementation)
+            namespace.use(element.middlewareImplementation)
         });
     }
 }
