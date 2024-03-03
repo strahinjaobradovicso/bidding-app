@@ -1,8 +1,9 @@
 import { EventException } from "../../sockets/exceptions/eventException";
-import { auctionNotification } from "../../sockets/notifications/auctionNotification";
+import { SocketServer } from "../../sockets/socketServer";
 import { BidToServer } from "../dtos/bidToServer";
 import { AuctionBid } from "../models/auctionBid";
 import { TimeUnit, diffByUnit } from "../util/diffByUnit";
+import DB from "../../database";
 
 const bids = new Map<string, AuctionBid>;
 
@@ -32,19 +33,26 @@ export const bidStoreClient: BidStoreService = {
         const auctionBid = bidStoreClient.getBid(key);
         auctionBid.askValue = value;
         auctionBid.userId = userId;
+
+        DB.Bid.create({
+            auctionId: Number(key),
+            userId: userId,
+            value: value
+        });
         return auctionBid;
     },
     clearAuctions: () => {
 
         for(const [key, bid] of bids){
-            auctionNotification.auctionResult(key, bid.reachedValue);
+            const io = SocketServer.getInstance();
+            io.of('/auctions').to(key).emit("auctionResult", key, bid.reachedValue);
         }
 
         bids.clear();  
     },
     lowerAskBid: (interval: number) => {
-
-        const auctionsToClose = []
+        const io = SocketServer.getInstance();
+        let auctionsToClose = []
 
         for(const [key, bid] of bids){
             const now = new Date()
@@ -52,7 +60,7 @@ export const bidStoreClient: BidStoreService = {
             if(diffByUnit(lastBidTime, now, TimeUnit.Seconds) >= interval){
                 const lowerAsk = bid.lowerAskValue();
                 if(lowerAsk){
-                    auctionNotification.loweredAskBid(key, lowerAsk);
+                    io.of('/auctions').to(key).emit("loweredAskBid", key, lowerAsk);
                 }
                 else{
                     auctionsToClose.push(key);
@@ -60,8 +68,10 @@ export const bidStoreClient: BidStoreService = {
             }
         }   
         for (const key of auctionsToClose) {
-            auctionNotification.auctionResult(key, bids.get(key)!.reachedValue);
+            const bid = bids.get(key);
+            io.of('/auctions').to(key).emit("auctionResult", key, bid!.reachedValue);
             bids.delete(key);
         }
+        auctionsToClose = []
     },
 }
