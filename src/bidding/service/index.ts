@@ -38,7 +38,10 @@ export const bidStoreClient: BidStoreService = {
             auctionId: Number(key),
             userId: userId,
             value: value
+        }).catch(err=>{
+            console.log(err);
         });
+        
         return auctionBid;
     },
     clearAuctions: () => {
