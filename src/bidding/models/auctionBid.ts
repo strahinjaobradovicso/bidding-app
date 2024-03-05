@@ -6,7 +6,6 @@ import { AuctionRules } from "./auctionRules";
 export class AuctionBid {
 
     public auctionRules: AuctionRules;
-    public extendAuction: boolean;
     private _askValue: number;
     public reachedValue: number;
     public time: Date;
@@ -16,7 +15,6 @@ export class AuctionBid {
 
     constructor(auctionRules: AuctionRules, itemPrice: number) {
         this.auctionRules = auctionRules;
-        this.extendAuction = false;
         this._askValue = auctionRules.startingBid;
         this.reachedValue = 0;
         this.time = new Date()
@@ -35,12 +33,6 @@ export class AuctionBid {
 
         const step = this.itemPrice * this.increment;
         this._askValue = v + step;
-
-        const diff = diffByUnit(new Date(), this.auctionRules.end, TimeUnit.Seconds);
-        if(diff <= this.auctionRules.extraTimeSec){
-            this.extendAuction = true;
-            this.auctionRules.extendAuction()
-        }
     }
 
     public lowerAskValue(): number | null {
