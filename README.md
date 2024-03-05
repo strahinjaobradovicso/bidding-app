@@ -2,14 +2,14 @@
 A real-time bidding app using Express, CRON jobs and Socket.io.
 
 ## Some features
-- Short auctions lasting 60 seconds or a little longer.
-- If the bid is placed in the last seconds, the closing time will be extended.
-- If there are no bids after a certain period, the asking value will be reduced.
+- Short auctions lasting 60 seconds ⏳
+- if it is too quiet, the ask-bid will be reduced 📉
+- Real-time bidding 🙋‍♂️
 
 ## Express server
-- creating items and scheduling auctions.
-- activation of scheduled auctions.
-- two-way communication link.
+- creating items and scheduling auctions 📦📅
+- activation of scheduled auctions 🔔
+- two-way communication link 💬💬
 
 ## Bidding in real time
 Since this is a real-time application, latency during bidding must be minimal.\
@@ -43,35 +43,6 @@ npm run start_dev
 ## Unit testing
 npm run test
 
-## Bidding via POSTMAN
-After the auction starts, you can access it through the postman.
-
-1. Select the Socket.io request type
-2. Add the following events to listen to:
-- enterAuctionToClient (get the auction rules and the last bid):
-```json{
-    "askValue": 100,
-    "extendAuction": false,
-    "auctionRules": {
-        "start": "2024-02-22T09:00:00",
-        "end": "2024-02-22T09:01:00",
-        "extraTimeSec": 5,
-        "startingBid": 100,
-        "bidIncrement": 0.1
-    }
-}
-```
-- placeBidToClient     (someone placed the bid)
-3. Connect to: "localhost:3000/auction"
-4. You can send the following messages:
-- enterAuctionToServer (pass auction ID and enter the auction room)
-- placeBidToServer (place the bid):
-```json
-{
-  "auctionId": "1",
-  "value": 200,
-}
-```
 ## Happy bidding!
 
 
