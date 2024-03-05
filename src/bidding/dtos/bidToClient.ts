@@ -1,7 +1,9 @@
+import { Bidder } from "../interfaces/bidder";
 import { AuctionRules } from "../models/auctionRules";
 
 export interface BidToClient {
-    userId?: number;
+    bidder?: Bidder;
     askValue: number;
-    auctionRules?: AuctionRules
+    auctionRules?: AuctionRules;
+    reachedValue: number;
 }
