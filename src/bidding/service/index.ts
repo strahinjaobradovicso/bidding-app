@@ -5,6 +5,7 @@ import { AuctionBid } from "../models/auctionBid";
 import { TimeUnit, diffByUnit } from "../util/diffByUnit";
 import DB from "../../database";
 import { Bidder } from "../interfaces/bidder";
+import { AuctionStatus } from "../../database/models/auction";
 
 const bids = new Map<string, AuctionBid>;
 
@@ -50,6 +51,22 @@ export const bidStoreClient: BidStoreService = {
         for(const [key, bid] of bids){
             const io = SocketServer.getInstance();
             io.of('/auctions').to(key).emit("auctionResult", key, bid.toDto(false));
+
+            DB.Auction.findByPk(key)
+            .then(auction => {
+                if(auction){
+                    auction.status = AuctionStatus.Done;
+                    auction.userId = bid.bidder?bid.bidder.id:undefined;
+                    auction.lastBid = bid.reachedValue;
+                    auction.save()
+                }
+                else{
+                    throw new Error('auction not found');
+                }
+            })
+            .catch(err => {
+                console.log(err);
+            })
         }
 
         bids.clear();  
