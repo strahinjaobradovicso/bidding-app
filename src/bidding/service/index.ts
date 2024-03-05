@@ -58,7 +58,7 @@ export const bidStoreClient: BidStoreService = {
                     auction.status = AuctionStatus.Done;
                     auction.userId = bid.bidder?bid.bidder.id:undefined;
                     auction.lastBid = bid.reachedValue;
-                    auction.save()
+                    return auction.save();
                 }
                 else{
                     throw new Error('auction not found');
