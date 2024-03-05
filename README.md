@@ -2,14 +2,14 @@
 A real-time bidding app using Express, CRON jobs and Socket.io.
 
 ## Some features
-- Short auctions lasting 60 seconds
-- if it is too quiet, the ask-bid will be reduced
-- Real-time bidding
+- Short auctions lasting 60 seconds ⏳
+- if it is too quiet, the ask-bid will be reduced 📉
+- Real-time bidding 🙋‍♂️
 
 ## Express server
-- creating items and scheduling auctions
-- activation of scheduled auctions
-- two-way communication link
+- creating items and scheduling auctions 📦📅
+- activation of scheduled auctions 🔔
+- two-way communication link 💬💬
 
 ## Bidding in real time
 Since this is a real-time application, latency during bidding must be minimal.\
