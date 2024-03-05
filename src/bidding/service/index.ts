@@ -4,13 +4,14 @@ import { BidToServer } from "../dtos/bidToServer";
 import { AuctionBid } from "../models/auctionBid";
 import { TimeUnit, diffByUnit } from "../util/diffByUnit";
 import DB from "../../database";
+import { Bidder } from "../interfaces/bidder";
 
 const bids = new Map<string, AuctionBid>;
 
 interface BidStoreService {
     setBid: (key: string, bid: AuctionBid) => void
     getBid: (key: string) => AuctionBid
-    placeBid: (userId: number, bid: BidToServer) => AuctionBid
+    placeBid: (bidder: Bidder, bid: BidToServer) => AuctionBid
     clearAuctions: () => void
     lowerAskBid: (interval: number) => void
 }
@@ -26,17 +27,17 @@ export const bidStoreClient: BidStoreService = {
         }
         return auctionBid;
     },
-    placeBid: (userId: number, bid: BidToServer) => {
+    placeBid: (bidder: Bidder, bid: BidToServer) => {
         const key = bid.auctionId;
         const value = bid.value;
 
         const auctionBid = bidStoreClient.getBid(key);
         auctionBid.askValue = value;
-        auctionBid.userId = userId;
+        auctionBid.bidder = bidder;
 
         DB.Bid.create({
             auctionId: Number(key),
-            userId: userId,
+            userId: bidder.id,
             value: value
         }).catch(err=>{
             console.log(err);
@@ -48,7 +49,7 @@ export const bidStoreClient: BidStoreService = {
 
         for(const [key, bid] of bids){
             const io = SocketServer.getInstance();
-            io.of('/auctions').to(key).emit("auctionResult", key, bid.reachedValue);
+            io.of('/auctions').to(key).emit("auctionResult", key, bid.toDto(false));
         }
 
         bids.clear();  
@@ -72,7 +73,7 @@ export const bidStoreClient: BidStoreService = {
         }   
         for (const key of auctionsToClose) {
             const bid = bids.get(key);
-            io.of('/auctions').to(key).emit("auctionResult", key, bid!.reachedValue);
+            io.of('/auctions').to(key).emit("auctionResult", key, bid?.toDto(false));
             bids.delete(key);
         }
         auctionsToClose = []

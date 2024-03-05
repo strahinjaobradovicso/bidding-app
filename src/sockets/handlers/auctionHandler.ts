@@ -35,8 +35,12 @@ export class AuctionHandler implements SocketHandler {
                     throw new EventException(errors);
                 }
                 const token = (socket.request as TokenRequest).token;
-                const userId = token.userId;
-                const newAskBid = bidStoreClient.placeBid(userId, data);
+
+                const newAskBid = bidStoreClient.placeBid({
+                    id: token.userId,
+                    username: token.username
+                }, data);
+                
                 const newAskBidDto: BidToClient = newAskBid.toDto(false);
 
                 socket
