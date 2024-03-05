@@ -56,7 +56,6 @@ export const bidStoreClient: BidStoreService = {
     },
     lowerAskBid: (interval: number) => {
         const io = SocketServer.getInstance();
-        let auctionsToClose = []
 
         for(const [key, bid] of bids){
             const now = new Date()
@@ -66,16 +65,7 @@ export const bidStoreClient: BidStoreService = {
                 if(lowerAsk){
                     io.of('/auctions').to(key).emit("loweredAskBid", key, lowerAsk);
                 }
-                else{
-                    auctionsToClose.push(key);
-                }
             }
         }   
-        for (const key of auctionsToClose) {
-            const bid = bids.get(key);
-            io.of('/auctions').to(key).emit("auctionResult", key, bid?.toDto(false));
-            bids.delete(key);
-        }
-        auctionsToClose = []
     },
 }
