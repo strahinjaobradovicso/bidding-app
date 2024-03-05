@@ -25,7 +25,14 @@ export class SocketServer extends Server {
     }
 
     private initializeMiddlewares(){
-        this.engine.use(authMiddleware());
+        this.engine.use((req:any,res:any,next:any)=>{
+            if (req._query.sid === undefined) {
+                authMiddleware()(req,res,next);
+            }
+            else{
+                next();
+            } 
+        })
     }
 
     public initializeHandlers(socketHandlers: Array<SocketHandler>) {
