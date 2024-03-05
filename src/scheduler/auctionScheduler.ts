@@ -26,20 +26,33 @@ const init = (auctionService: AuctionService) => {
 
     for (const check of SILENT_CHECKS) {
         const silentChecks = nodeCron.schedule(check, () => {
-            bidStoreClient.lowerAskBid(SILENT_INTERVAL_SEC);
+            try {
+                bidStoreClient.lowerAskBid(SILENT_INTERVAL_SEC);
+            } catch (error) {
+                console.log(error);
+            }
         })
     }
 
     const clearAuctions = nodeCron.schedule(CLEAR_AUCTIONS, () => {
-        bidStoreClient.clearAuctions();
+        try {
+            bidStoreClient.clearAuctions();
+        } catch (error) {
+            console.log(error);
+        }
     });
 }
 
 const setAuctionBid = async (auction: AuctionModel) => {
-    const item = await auction.getItemModel()
-    const auctionRules = new AuctionRules(auction);
-    const startingBid = new AuctionBid(auctionRules, item.price);
-    bidStoreClient.setBid(auction.id.toString(), startingBid);
+    try {
+        const item = await auction.getItemModel();
+        const auctionRules = new AuctionRules(auction);
+        const startingBid = new AuctionBid(auctionRules, item.price);
+        bidStoreClient.setBid(auction.id.toString(), startingBid);
+    } catch (error) {
+        console.log(error);
+    }
+    
 }
 
 export const auctionScheduler = {

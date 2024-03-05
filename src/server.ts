@@ -3,10 +3,6 @@ import helmet from 'helmet';
 import { NODE_ENV, PORT } from './config';
 import bodyParser from 'body-parser';
 import errorMiddleware from './middlewares/errorMiddleware';
-import DB from './database';
-import http from 'http';
-import { SocketServer } from './sockets/socketServer';
-import { AuctionHandler } from './sockets/handlers/auctionHandler';
 import { Routes } from './routes/interfaces/route';
 
 class Server {
@@ -40,23 +36,6 @@ class Server {
         this.app.use(errorMiddleware)
     }
 
-    public initIO(httpServer?:any){
-        const io = SocketServer.getInstance(httpServer);
-        io.initializeHandlers([
-            { path: '/auction', handler: new AuctionHandler() },
-        ])
-    }
-
-    public async start(){   
-        try {
-            await DB.connect()
-            const httpServer = http.createServer(this.app)
-            this.initIO(httpServer);
-            httpServer.listen(this.port)
-        } catch (error) {
-            console.log(error)
-        }
-    }
 }
 
 export default Server;

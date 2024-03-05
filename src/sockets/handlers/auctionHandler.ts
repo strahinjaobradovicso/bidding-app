@@ -13,6 +13,8 @@ import { TokenRequest } from "../../ambient/request";
 
 export class AuctionHandler implements SocketHandler {
 
+    public path = '/auctions'
+
     handleConnection(socket: Socket<ToServerEvents, ToClientEvents>): void {
         socket.on('enterAuctionToServer', async (auctionId) => {
             try {

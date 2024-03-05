@@ -13,6 +13,11 @@ import { AuctionService } from "./services/AuctionService";
 import { AuthService } from "./services/AuthService";
 import { ItemService } from "./services/ItemService";
 import { UserService } from "./services/UserService";
+import http from 'http';
+import { SocketServer } from "./sockets/socketServer";
+import { AuctionHandler } from "./sockets/handlers/auctionHandler";
+import { SocketHandler } from "./sockets/multiplexing/socketHandler";
+import DB from "./database";
 
 const userService = new UserService();
 const authService = new AuthService();
@@ -26,7 +31,22 @@ const routes: Routes[] = [
     new AuctionRoute(new AuctionController(auctionService))
 ]
 
-const app = new Server(routes)
+const server = new Server(routes)
+const httpServer = http.createServer(server.app);
+
+const handlers: SocketHandler[] = [
+    new AuctionHandler()
+]
+const io = SocketServer.getInstance(httpServer);
+io.initializeHandlers(handlers);
+
 auctionScheduler.init(auctionService);
 
-app.start()
+
+DB.connect()
+.then(()=>{
+    httpServer.listen(server.port);
+})
+.catch(error => {
+    console.log(error);
+})

@@ -59,7 +59,8 @@ export class AuctionBid {
         const auctionBidDto = {
             userId: this.userId,
             askValue: this._askValue,
-            auctionRules: includeRules ? this.auctionRules : undefined
+            auctionRules: includeRules ? this.auctionRules : undefined,
+            reachedValue: this.reachedValue
         }
         return auctionBidDto;
     }

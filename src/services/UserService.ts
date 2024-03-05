@@ -8,7 +8,7 @@ export class UserService {
 
     private dbUser = DB.User;
 
-    public createUser = async (userData: CreateUserDto): Promise<UserModel> => {
+    public createUser = async (userData: CreateUserDto): Promise<void> => {
         
         let userProperties = DB.User.getAttributes()    
         const errors = []
@@ -34,9 +34,6 @@ export class UserService {
         
         let userWithSalt = {...userData, salt};
         await this.dbUser.create(userWithSalt);    
-    
-        const user = await this.dbUser.findOne({where: {username: userData.username}})
-        return user!;
     }
 
     public findByUniqueProperty = async (property: string, userData: CreateUserDto): Promise<UserModel | null> => {
