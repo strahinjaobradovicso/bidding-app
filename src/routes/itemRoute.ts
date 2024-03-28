@@ -38,5 +38,15 @@ export class ItemRoute implements Routes {
         isOwnerMiddleware(ItemModel, 'itemId'),
         dtoValidationMiddleware(CreateItemDto),
         this.itemController.updateItem)
+        
+        this.router.get(`${this.path}`,
+        authMiddleware(),
+        setOwnerMiddleware('userId', 'query'),
+        this.itemController.getItems);
+
+        this.router.get(`${this.path}/:itemId`,
+        authMiddleware(),
+        isOwnerMiddleware(ItemModel, 'itemId'),
+        this.itemController.getById);
     }
 }
