@@ -1,6 +1,6 @@
 import { TimeUnit, diffByUnit } from "../bidding/util/diffByUnit";
 import DB from "../database";
-import { AuctionModel } from "../database/models/auction";
+import { AuctionModel, AuctionStatus } from "../database/models/auction";
 import { CreateAuctionDto } from "../dtos/auction";
 import { HttpException } from "../exceptions/httpException";
 import { ItemService } from "./ItemService";
@@ -26,7 +26,7 @@ export class AuctionService {
     }  
 
     public createAuction = async (auctionData: CreateAuctionDto): Promise<AuctionModel> => {
-
+        auctionData.start = new Date(auctionData.start);
         if(!this.isStartTimeValid(auctionData.start)){
             throw new HttpException(409, `auction start time is not valid`)
         }
@@ -84,5 +84,24 @@ export class AuctionService {
         return updatedAuction;
     }
 
+    public findUpcoming = async (date?: Date): Promise<AuctionModel[]> => {
+        const upcomingAuctions: AuctionModel[] = await this.dbAuction.findAll({
+            where: {
+                status: AuctionStatus.Upcoming
+            }
+        });
 
+        if(date){
+            return upcomingAuctions.filter((auction)=>{
+                return auction.start.getFullYear() === date.getFullYear()
+                    && auction.start.getMonth() === date.getMonth()
+                    && auction.start.getDate() === date.getDate()
+            })
+        }
+        else{
+            return upcomingAuctions;
+        }
+            
+
+    }
 }

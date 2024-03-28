@@ -40,4 +40,19 @@ export class AuctionController {
         }
     }
 
+    public getUpcoming = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const date = req.query.date as string;
+            let auctions;
+            if(date)
+                auctions = await this.auctionService.findUpcoming(new Date(date));
+            else{
+                auctions = await this.auctionService.findUpcoming();
+            }
+            res.status(200).json(auctions);
+        } catch (error) {
+            next(error);
+        }
+    }
+
 }

@@ -1,8 +1,8 @@
-import { IsDate, IsNumber } from "class-validator";
+import { IsDate, IsDateString, IsNumber } from "class-validator";
 
 export class CreateAuctionDto {
 
-    @IsDate()
+    @IsDateString()
     declare start: Date;
     
     @IsNumber()

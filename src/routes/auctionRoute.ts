@@ -35,5 +35,8 @@ export class AuctionRoute implements Routes {
         isOwnerMiddleware(AuctionModel, 'auctionId'),
         dtoValidationMiddleware(CreateAuctionDto),
         this.auctionController.updateAuction);
+
+        this.router.get(`${this.path}`,
+        this.auctionController.getUpcoming)
     }
 }
