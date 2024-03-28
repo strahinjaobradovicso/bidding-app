@@ -15,11 +15,21 @@ class Server {
         this.port = PORT || 3000;
         this.env = NODE_ENV || 'dev' 
 
+        this.enableCors()
         this.initMiddlewares()
         this.initRoutes(routes)
         this.initErrorMiddleware()
     }
 
+    private enableCors(){
+        this.app.use((req, res, next) => {
+            res.setHeader('Access-Control-Allow-Origin', '*'); 
+            res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+            res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+
+            next();
+        })
+    }
 
     private initMiddlewares(){
         this.app.use(helmet())
