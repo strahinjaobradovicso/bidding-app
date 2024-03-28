@@ -3,10 +3,12 @@ import { BelongsToMixin } from "../mixins/belongsToMixin";
 import { UserModel } from "./user";
 import { HasManyMixin } from "../mixins/hasManyMixin";
 import { AuctionModel } from "./auction";
+import { ImageModel } from "./image";
 
 export interface ItemModel extends
     BelongsToMixin<UserModel, number, 'UserModel'>,
-    HasManyMixin<AuctionModel, number, 'AuctionModel'>
+    HasManyMixin<AuctionModel, number, 'AuctionModel'>,
+    HasManyMixin<ImageModel, number, 'ImageModel'>
     {
         id: CreationOptional<number>,
         title: string,
@@ -15,7 +17,7 @@ export interface ItemModel extends
         userId: number
 }
 
-type ItemModelAttributes = InferAttributes<ItemModel, { omit:'userId' }>
+type ItemModelAttributes = InferAttributes<ItemModel>
 type ItemCreationAttributes = InferCreationAttributes<ItemModel>
 
 export class ItemModel extends Model<ItemModelAttributes, ItemCreationAttributes> {
@@ -41,6 +43,9 @@ const initItem = (sequelize: Sequelize)=>{
         },
         description:{
             type: DataTypes.STRING,
+        },
+        userId:{
+            type: DataTypes.INTEGER
         }
         },
         {

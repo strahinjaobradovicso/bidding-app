@@ -6,6 +6,7 @@ import { CreateItemDto } from "../dtos/item";
 import { isOwnerMiddleware, setOwnerMiddleware } from "../middlewares/ownerMiddleware";
 import { ItemModel } from "../database/models/item";
 import { authMiddleware } from "../middlewares/authMiddleware";
+import { multerMiddleware } from "../middlewares/multerMiddleware";
 
 export class ItemRoute implements Routes {
     public path = '/items'
@@ -22,6 +23,7 @@ export class ItemRoute implements Routes {
         this.router.post(`${this.path}`,
         authMiddleware(),
         dtoValidationMiddleware(CreateItemDto),
+        multerMiddleware,
         setOwnerMiddleware('userId', 'body'),
         this.itemController.storeItem
         );

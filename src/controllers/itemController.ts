@@ -15,7 +15,8 @@ export class ItemController {
         try {
             const owner:number = req.body.userId
             const itemData: CreateItemDto = req.body;
-            const storeItemData: ItemModel = await this.itemService.createItem(owner, itemData);
+            const images = (JSON.parse(JSON.stringify(req.files)));
+            const storeItemData: ItemModel = await this.itemService.createItem(owner, itemData, images);
             res.status(201).json({ data: storeItemData, message: 'item stored'});
         } catch (error) {
             next(error);

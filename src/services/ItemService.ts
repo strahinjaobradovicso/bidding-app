@@ -1,5 +1,7 @@
 import DB from "../database";
+import { ImageModel } from "../database/models/image";
 import { ItemModel } from "../database/models/item";
+import { UserModel } from "../database/models/user";
 import { CreateItemDto } from "../dtos/item";
 import { HttpException } from "../exceptions/httpException";
 
@@ -7,10 +9,22 @@ export class ItemService {
     
     private dbItem = DB.Item;
 
-    public createItem = async (userId: number, itemData: CreateItemDto): Promise<ItemModel> => {
+    public createItem = async (userId: number, itemData: CreateItemDto, images: any): Promise<ItemModel> => {
         let item;
         try {
             item = await this.dbItem.create({...itemData, userId});
+            const promises = [];
+            for (const img of images) {
+                let imgUrl = img.path.replace("\\", "/");
+                let promise = DB.Image.create({
+                    imageData: imgUrl,
+                    itemId: item.id
+                })
+                promises.push(promise);
+            }
+            await Promise.all(promises);
+                
+
         } catch (error) {
             throw new HttpException(500)
         }
@@ -18,7 +32,9 @@ export class ItemService {
     }
     
     public findItemById = async (itemId: number): Promise<ItemModel> => {
-        const item = await this.dbItem.findByPk(itemId);
+        const item = await this.dbItem.findByPk(itemId, {
+            include: ImageModel
+        });
         if(!item){
             throw new HttpException(404, 'Item not found')
         }
@@ -41,5 +57,12 @@ export class ItemService {
         const updatedItem = await dbItem.save();
 
         return updatedItem;
+    }
+
+    public findItems = async(owner: number):Promise<ItemModel[]> => {
+        return this.dbItem.findAll({
+            include: ImageModel,
+            where:{ userId: owner }
+        });
     }
 }

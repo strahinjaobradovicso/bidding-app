@@ -4,6 +4,7 @@ import { NODE_ENV, PORT } from './config';
 import bodyParser from 'body-parser';
 import errorMiddleware from './middlewares/errorMiddleware';
 import { Routes } from './routes/interfaces/route';
+import path from 'path';
 
 class Server {
     app: express.Application;
@@ -32,7 +33,9 @@ class Server {
     }
 
     private initMiddlewares(){
-        this.app.use(helmet())
+        this.app.use(helmet({
+            crossOriginResourcePolicy: false
+        }))
         this.app.use(bodyParser.json())
     }
 
@@ -40,6 +43,7 @@ class Server {
         for (const route of routes) {
             this.app.use('/', route.router);
         }
+        this.app.use('/images', express.static(path.join(__dirname, '..', 'images')));
     }
 
     public initErrorMiddleware(){

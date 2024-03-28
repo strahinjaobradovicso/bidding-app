@@ -4,6 +4,7 @@ import initUser from "./models/user";
 import initItem from "./models/item";
 import initAuction from "./models/auction";
 import initBid from "./models/bid";
+import initImage from "./models/image";
 
 const sequelize = new Sequelize(DB_SCHEMA!, DB_USERNAME!, DB_PASSWORD, {
     dialect: DB_DIALECT as Dialect,
@@ -20,7 +21,8 @@ const DB = {
     User: initUser(sequelize),
     Item: initItem(sequelize),
     Auction: initAuction(sequelize),
-    Bid: initBid(sequelize)
+    Bid: initBid(sequelize),
+    Image: initImage(sequelize)
 }
 
 DB.User.hasMany(DB.Item, {
@@ -106,5 +108,20 @@ DB.Auction.belongsTo(DB.User, {
     },
 })
 
+DB.Item.hasMany(DB.Image, {
+    foreignKey: {
+        name: 'itemId',
+        field: 'item_id',
+        allowNull: false
+    },
+})
+
+DB.Image.belongsTo(DB.Item, {
+    foreignKey: {
+        name: 'itemId',
+        field: 'item_id',
+        allowNull: false
+    },
+})
 
 export default DB;

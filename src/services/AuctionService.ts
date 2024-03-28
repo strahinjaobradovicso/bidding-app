@@ -1,6 +1,8 @@
 import { TimeUnit, diffByUnit } from "../bidding/util/diffByUnit";
 import DB from "../database";
 import { AuctionModel, AuctionStatus } from "../database/models/auction";
+import { ImageModel } from "../database/models/image";
+import { ItemModel } from "../database/models/item";
 import { CreateAuctionDto } from "../dtos/auction";
 import { HttpException } from "../exceptions/httpException";
 import { ItemService } from "./ItemService";
@@ -86,6 +88,9 @@ export class AuctionService {
 
     public findUpcoming = async (date?: Date): Promise<AuctionModel[]> => {
         const upcomingAuctions: AuctionModel[] = await this.dbAuction.findAll({
+            include: [
+                {model: ItemModel, include: [ImageModel]}
+            ],
             where: {
                 status: AuctionStatus.Upcoming
             }
