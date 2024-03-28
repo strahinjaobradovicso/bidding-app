@@ -22,8 +22,8 @@ export class ItemRoute implements Routes {
     private initRoutes(){
         this.router.post(`${this.path}`,
         authMiddleware(),
+        multerMiddleware.array('file'),
         dtoValidationMiddleware(CreateItemDto),
-        multerMiddleware,
         setOwnerMiddleware('userId', 'body'),
         this.itemController.storeItem
         );

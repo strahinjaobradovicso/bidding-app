@@ -23,4 +23,4 @@ export const multerMiddleware = multer({
             cb(null, false);
         }
     }
-}).array('file');
+})
