@@ -4,6 +4,7 @@ import { bidStoreClient } from "../bidding/service";
 import { AuctionBid } from "../bidding/models/auctionBid";
 import { AuctionRules } from "../bidding/models/auctionRules";
 import { AuctionService } from "../services/AuctionService";
+import { toUTC } from "../services/util/dateConverter";
 
 const SET_AUCTIONS = "0 0 * * * *";
 const CLEAR_AUCTIONS = "0 1 * * * *";
@@ -18,7 +19,7 @@ const SILENT_CHECKS = [
 
 const init = (auctionService: AuctionService) => {
     const setAuctions = nodeCron.schedule(SET_AUCTIONS, async () => {
-        const auctions:AuctionModel[] = await auctionService.findAllByDate(new Date());
+        const auctions:AuctionModel[] = await auctionService.findAllByDate(toUTC(new Date()));
         for (const auction of auctions) {
             setAuctionBid(auction);
         }    
