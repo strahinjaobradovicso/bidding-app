@@ -1,3 +1,4 @@
+import { Op } from "sequelize";
 import { TimeUnit, diffByUnit } from "../bidding/util/diffByUnit";
 import DB from "../database";
 import { AuctionModel, AuctionStatus } from "../database/models/auction";
@@ -6,6 +7,7 @@ import { ItemModel } from "../database/models/item";
 import { CreateAuctionDto } from "../dtos/auction";
 import { HttpException } from "../exceptions/httpException";
 import { ItemService } from "./ItemService";
+import { toUTC } from "./util/dateConverter";
 
 export const SCHEDULE_TO_START_MIN_DAYS = 1;
 
@@ -19,8 +21,10 @@ export class AuctionService {
     }
     
     public isStartTimeValid = (start: Date): boolean => {
-        let now = new Date()
-        const daysDiff = diffByUnit(now, start, TimeUnit.Days);
+        let nowLocal = new Date()
+        const nowUTC = toUTC(nowLocal);
+
+        const daysDiff = diffByUnit(nowUTC, start, TimeUnit.Days);
         if(daysDiff < SCHEDULE_TO_START_MIN_DAYS) {
             return false;
         }
@@ -87,26 +91,37 @@ export class AuctionService {
     }
 
     public findUpcoming = async (date?: Date): Promise<AuctionModel[]> => {
-        const upcomingAuctions: AuctionModel[] = await this.dbAuction.findAll({
-            include: [
-                {model: ItemModel, include: [ImageModel]}
-            ],
-            where: {
-                status: AuctionStatus.Upcoming
-            }
-        });
+
+        let upcomingAuctions: AuctionModel[] = [];
+        const whereCondition:any = {};
 
         if(date){
-            return upcomingAuctions.filter((auction)=>{
-                return auction.start.getFullYear() === date.getFullYear()
-                    && auction.start.getMonth() === date.getMonth()
-                    && auction.start.getDate() === date.getDate()
-            })
+            const end = date.getTime() + (23*60*60*1000);
+            whereCondition.start = {
+                [Op.between]: [date, end]
+            };
         }
         else{
-            return upcomingAuctions;
+            whereCondition.status = AuctionStatus.Upcoming
         }
-            
+
+        if(!date){
+            upcomingAuctions = await this.dbAuction.findAll({
+                include: [
+                    {model: ItemModel, include: [ImageModel]}
+                ],
+                where: whereCondition
+            });
+        } else {
+            upcomingAuctions = await this.dbAuction.findAll({
+                include: [
+                    {model: ItemModel, include: [ImageModel]}
+                ],
+                where: whereCondition
+            });
+        }
+
+        return upcomingAuctions;            
 
     }
 }
