@@ -5,5 +5,5 @@ export enum TimeUnit {
 }
 
 export const diffByUnit = (date1: Date, date2: Date, unit: TimeUnit) => {
-    return Math.round((date2.getTime() - date1.getTime()) / unit);
+    return (date2.getTime() - date1.getTime()) / unit;
 }
