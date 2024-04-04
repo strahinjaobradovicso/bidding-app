@@ -4,9 +4,9 @@ import dtoValidationMiddleware from "../middlewares/dtoValidationMiddleware";
 import { AuctionController } from "../controllers/auctionController";
 import { authMiddleware } from "../middlewares/authMiddleware";
 import { isOwnerMiddleware } from "../middlewares/ownerMiddleware";
-import { AuctionModel } from "../database/models/auction";
 import { CreateAuctionDto } from "../dtos/auction";
 import { QueryAuctionDto } from "../dtos/queries/auctionQuery";
+import { ItemModel } from "../database/models/item";
 
 export class AuctionRoute implements Routes {
 
@@ -23,17 +23,18 @@ export class AuctionRoute implements Routes {
     private initRoutes(){
         this.router.post(`${this.path}`, 
         authMiddleware(),
+        isOwnerMiddleware(ItemModel, 'body', 'itemId'),
         dtoValidationMiddleware(CreateAuctionDto, 'body'),
         this.auctionController.scheduleNewAuction);
 
-        this.router.delete(`${this.path}/:auctionId`,
+        this.router.delete(`${this.path}/:itemId`,
         authMiddleware(),
-        isOwnerMiddleware(AuctionModel, 'auctionId'),
+        isOwnerMiddleware(ItemModel, 'params' ,'itemId'),
         this.auctionController.cancelAuction);
 
         this.router.put(`${this.path}/:auctionId`, 
         authMiddleware(),
-        isOwnerMiddleware(AuctionModel, 'auctionId'),
+        isOwnerMiddleware(ItemModel, 'body', 'itemId'),
         dtoValidationMiddleware(CreateAuctionDto, 'body'),
         this.auctionController.updateAuction);
 

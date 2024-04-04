@@ -2,11 +2,15 @@ import { NextFunction, Request, Response } from "express";
 import { TokenRequest } from "../ambient/request";
 import { HttpException } from "../exceptions/httpException";
 
-export const isOwnerMiddleware = (model: any, modelIdParamName:string = 'id') => {
+export const isOwnerMiddleware = (
+    model: any,
+    inside: 'params' | 'query' | 'body',
+    modelIdKey: string = 'id'
+    ) => {
 
     return async (req: Request, res: Response, next: NextFunction) => {
 
-        const modelData = await model.findByPk(req.params[modelIdParamName]);
+        const modelData = await model.findByPk(req[inside][modelIdKey]);
         if(!modelData){
             return next(new HttpException(404, 'resource not found'));
         }
@@ -16,12 +20,11 @@ export const isOwnerMiddleware = (model: any, modelIdParamName:string = 'id') =>
             return next(new Error('request missing token'));
         }
 
-        if(modelData.userId === token.userId){
-            next();
+        if(modelData.userId !== token.userId){
+            return next(new Error('not the owner'));
         }
-        else{
-            next(new Error('not the owner'));
-        }
+
+        return next();
     }
 }
 

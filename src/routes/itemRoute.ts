@@ -31,12 +31,12 @@ export class ItemRoute implements Routes {
         
         this.router.delete(`${this.path}/:itemId`, 
         authMiddleware(),
-        isOwnerMiddleware(ItemModel, 'itemId'),
+        isOwnerMiddleware(ItemModel, 'params', 'itemId'),
         this.itemController.deleteItem);
 
         this.router.put(`${this.path}/:itemId`,
         authMiddleware(),
-        isOwnerMiddleware(ItemModel, 'itemId'),
+        isOwnerMiddleware(ItemModel, 'params', 'itemId'),
         dtoValidationMiddleware(CreateItemDto, 'body'),
         this.itemController.updateItem)
         
@@ -48,7 +48,7 @@ export class ItemRoute implements Routes {
 
         this.router.get(`${this.path}/:itemId`,
         authMiddleware(),
-        isOwnerMiddleware(ItemModel, 'itemId'),
+        isOwnerMiddleware(ItemModel, 'params', 'itemId'),
         this.itemController.getById);
     }
 }
