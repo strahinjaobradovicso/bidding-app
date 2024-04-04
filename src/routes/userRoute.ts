@@ -15,6 +15,8 @@ export class UserRoute implements Routes {
     }
 
     private initRoutes(){
-        this.router.post(`${this.path}/signup`, dtoValidationMiddleware(CreateUserDto), this.userController.signUp);
+        this.router.post(`${this.path}/signup`,
+        dtoValidationMiddleware(CreateUserDto, 'body'),
+        this.userController.signUp);
     }
 }

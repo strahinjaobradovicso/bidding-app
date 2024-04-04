@@ -7,6 +7,7 @@ import { isOwnerMiddleware, setOwnerMiddleware } from "../middlewares/ownerMiddl
 import { ItemModel } from "../database/models/item";
 import { authMiddleware } from "../middlewares/authMiddleware";
 import { multerMiddleware } from "../middlewares/multerMiddleware";
+import { QueryItemDto } from "../dtos/queries/itemQuery";
 
 export class ItemRoute implements Routes {
     public path = '/items'
@@ -23,7 +24,7 @@ export class ItemRoute implements Routes {
         this.router.post(`${this.path}`,
         authMiddleware(),
         multerMiddleware.array('file'),
-        dtoValidationMiddleware(CreateItemDto),
+        dtoValidationMiddleware(CreateItemDto, 'body'),
         setOwnerMiddleware('userId', 'body'),
         this.itemController.storeItem
         );
@@ -36,12 +37,13 @@ export class ItemRoute implements Routes {
         this.router.put(`${this.path}/:itemId`,
         authMiddleware(),
         isOwnerMiddleware(ItemModel, 'itemId'),
-        dtoValidationMiddleware(CreateItemDto),
+        dtoValidationMiddleware(CreateItemDto, 'body'),
         this.itemController.updateItem)
         
         this.router.get(`${this.path}`,
         authMiddleware(),
-        setOwnerMiddleware('userId', 'query'),
+        setOwnerMiddleware('owner', 'query'),
+        dtoValidationMiddleware(QueryItemDto, 'query'),
         this.itemController.getItems);
 
         this.router.get(`${this.path}/:itemId`,

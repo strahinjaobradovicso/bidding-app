@@ -1,14 +1,21 @@
 import { plainToInstance } from "class-transformer";
 import { ValidationError, validate } from "class-validator";
-import { NextFunction, Request, RequestHandler, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { HttpException } from "../exceptions/httpException";
 
 
-const dtoValidationMiddleware = (type: any, skipMissingProperties = false, whitelist = true, forbidNonWhitelisted = true) => {
+const dtoValidationMiddleware = (
+    type: any,
+    inside: 'body' | 'query',
+    skipMissingProperties = false,
+    whitelist = true,
+    forbidNonWhitelisted = true
+    ) => {
     
     return async (req: Request, res: Response, next: NextFunction) => {
-        const obj = plainToInstance(type, req.body);
-        
+
+        const obj = plainToInstance(type, req[inside]);
+
         const errors:ValidationError[] = await validate(obj,
              { skipMissingProperties, whitelist, forbidNonWhitelisted });
 

@@ -2,9 +2,10 @@ import dtoValidationMiddleware from "../../middlewares/dtoValidationMiddleware"
 import { NextFunction, Request, Response } from "express";
 import { HttpException } from "../../exceptions/httpException";
 import { CreateUserDto } from "../../dtos/user";
+import { QueryAuctionDto } from "../../dtos/queries/auctionQuery";
 
-const requestHandlerFn = dtoValidationMiddleware(CreateUserDto, false)
-
+const requestHandlerFn = dtoValidationMiddleware(CreateUserDto, 'body')
+const queryAuctionValidator = dtoValidationMiddleware(QueryAuctionDto, 'query')
 
 describe('dto validation middleware', ()=>{
 
@@ -83,6 +84,26 @@ describe('dto validation middleware', ()=>{
 
         requestHandlerFn(req as Request, res as Response, next as NextFunction).then(message => {
             expect(message).toEqual('property salt should not exist')
+            done()
+        })
+    })
+
+    it('invalid status => error message is undefined', (done) => {
+        let testQuery: any = {
+            page: '1',
+            itemsPerPage: '10',
+            status: 'unexpectedStatus',
+            auctionWinner: '1',
+            date: new Date().toISOString(),
+            itemOwner: '1',
+            itemTitle: 'something'
+        }
+        req = {
+            query: testQuery
+        }
+
+        queryAuctionValidator(req as Request, res as Response, next as NextFunction).then(message => {
+            expect(message).toEqual("status must be one of the following values: UPCOMING, STARTED, DONE")          
             done()
         })
     })
