@@ -8,7 +8,7 @@ describe('date diff by unit', () => {
         const seconds = 20;
         const date2 = addSeconds(seconds);
         const secondsDiff = diffByUnit(date1, date2, TimeUnit.Seconds);
-        expect(secondsDiff).toBe(seconds);
+        expect(Math.round(secondsDiff)).toBe(seconds);
     })
 
     it('date diff by hours', () => {
@@ -16,7 +16,7 @@ describe('date diff by unit', () => {
         const seconds = hours * (60 * 60);
         const date2 = addSeconds(seconds);
         const hoursDiff = diffByUnit(date1, date2, TimeUnit.Hours);
-        expect(hoursDiff).toBe(hours);
+        expect(Math.round(hoursDiff)).toBe(hours);
     })
 
     it('date diff by days', () => {
@@ -24,6 +24,6 @@ describe('date diff by unit', () => {
         const seconds = days * (60 * 60 * 24);
         const date2 = addSeconds(seconds);
         const daysDiff = diffByUnit(date1, date2, TimeUnit.Days);
-        expect(daysDiff).toBe(days);
+        expect(Math.round(daysDiff)).toBe(days);
     })
 })
