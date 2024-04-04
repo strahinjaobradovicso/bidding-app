@@ -1,13 +1,14 @@
 import { Op } from "sequelize";
 import { TimeUnit, diffByUnit } from "../bidding/util/diffByUnit";
 import DB from "../database";
-import { AuctionModel, AuctionStatus } from "../database/models/auction";
+import { AuctionModel } from "../database/models/auction";
 import { ImageModel } from "../database/models/image";
 import { ItemModel } from "../database/models/item";
 import { CreateAuctionDto } from "../dtos/auction";
 import { HttpException } from "../exceptions/httpException";
 import { ItemService } from "./ItemService";
 import { toUTC } from "./util/dateConverter";
+import { QueryAuctionDto } from "../dtos/queries/auctionQuery";
 
 export const SCHEDULE_TO_START_MIN_DAYS = 1;
 
@@ -90,38 +91,57 @@ export class AuctionService {
         return updatedAuction;
     }
 
-    public findUpcoming = async (date?: Date): Promise<AuctionModel[]> => {
+    public find = async (query: QueryAuctionDto): Promise<{ 
+        rows: AuctionModel[],
+        count: number
+    }> => {
 
-        let upcomingAuctions: AuctionModel[] = [];
-        const whereCondition:any = {};
+        const whereAuction:any = {};
 
-        if(date){
-            const end = date.getTime() + (23*60*60*1000);
-            whereCondition.start = {
-                [Op.between]: [date, end]
+        if(query.status){
+            whereAuction.status = query.status
+        }
+        
+        if(query.date){
+            const end = query.date.getTime() + (23*60*60*1000);
+            whereAuction.start = {
+                [Op.between]: [query.date, end]
             };
         }
-        else{
-            whereCondition.status = AuctionStatus.Upcoming
+
+        
+        if(query.auctionWinner){
+            whereAuction.userId = query.auctionWinner
+        }
+        
+        const whereItem: any = {
+            title: {
+                [Op.startsWith]: query.itemTitle
+            }
+        }
+        if(query.itemOwner){
+            whereItem.userId = query.itemOwner
         }
 
-        if(!date){
-            upcomingAuctions = await this.dbAuction.findAll({
-                include: [
-                    {model: ItemModel, include: [ImageModel]}
-                ],
-                where: whereCondition
-            });
-        } else {
-            upcomingAuctions = await this.dbAuction.findAll({
-                include: [
-                    {model: ItemModel, include: [ImageModel]}
-                ],
-                where: whereCondition
-            });
-        }
+        let res: { 
+            rows: AuctionModel[],
+            count: number
+        };
 
-        return upcomingAuctions;            
+        res = await this.dbAuction.findAndCountAll({
+            include: [{
+                model: ItemModel,
+                where: whereItem,
+                include: [ImageModel]
+            }],
+
+            where: whereAuction,
+            offset: (query.page - 1) * query.itemsPerPage,
+            limit: query.itemsPerPage
+        });
+        
+
+        return res;            
 
     }
 }

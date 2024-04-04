@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from "express"
 import { CreateItemDto } from "../dtos/item";
 import { ItemModel } from "../database/models/item";
 import { ItemService } from "../services/ItemService";
+import { QueryItemDto } from "../dtos/queries/itemQuery";
 
 export class ItemController {
 
@@ -48,8 +49,14 @@ export class ItemController {
 
     public getItems = async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const owner:number = Number(req.query.userId)
-            const items = await this.itemService.findItems(owner);
+
+            const query: QueryItemDto = {
+                page: Number(req.query.page),
+                itemsPerPage: Number(req.query.itemsPerPage),
+                owner: Number(req.query.owner),
+                title: req.query.title as string || ''
+            }
+            const items = await this.itemService.findItems(query);
             res.status(200).json(items);
         } catch (error) {
             next(error);

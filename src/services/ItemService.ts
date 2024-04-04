@@ -1,9 +1,11 @@
+import { Op } from "sequelize";
 import DB from "../database";
 import { ImageModel } from "../database/models/image";
 import { ItemModel } from "../database/models/item";
 import { UserModel } from "../database/models/user";
 import { CreateItemDto } from "../dtos/item";
 import { HttpException } from "../exceptions/httpException";
+import { QueryItemDto } from "../dtos/queries/itemQuery";
 
 export class ItemService {
     
@@ -59,10 +61,22 @@ export class ItemService {
         return updatedItem;
     }
 
-    public findItems = async(owner: number):Promise<ItemModel[]> => {
-        return this.dbItem.findAll({
+    public findItems = async(query: QueryItemDto):Promise<
+    {
+        rows: ItemModel[],
+        count: number; 
+    }
+    > => {
+        return this.dbItem.findAndCountAll({
             include: ImageModel,
-            where:{ userId: owner }
+            where:{ 
+                userId: query.owner,
+                title: {
+                    [Op.startsWith]: query.title
+                }
+            },
+            offset: (query.page - 1)* query.itemsPerPage,
+            limit: query.itemsPerPage
         });
     }
 }

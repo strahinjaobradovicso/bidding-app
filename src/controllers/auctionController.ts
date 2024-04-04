@@ -2,6 +2,8 @@ import { NextFunction, Request, Response } from "express"
 import { CreateAuctionDto } from "../dtos/auction"
 import { AuctionService } from "../services/AuctionService";
 import { AuctionModel } from "../database/models/auction";
+import { QueryAuctionDto } from "../dtos/queries/auctionQuery";
+
 
 export class AuctionController {
 
@@ -40,15 +42,19 @@ export class AuctionController {
         }
     }
 
-    public getUpcoming = async (req: Request, res: Response, next: NextFunction) => {
+    public getAuctions = async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const date = req.query.date as string;
-            let auctions;
-            if(date)
-                auctions = await this.auctionService.findUpcoming(new Date(date));
-            else{
-                auctions = await this.auctionService.findUpcoming();
+            const query: QueryAuctionDto = {
+                page: Number(req.query.page),
+                itemsPerPage: Number(req.query.itemsPerPage),
+                date: req.query.date ? new Date(req.query.date as string): undefined,
+                status: req.query.status as string,
+                itemTitle: req.query.itemTitle as string || '',
+                itemOwner: Number(req.query.itemOwner),
+                auctionWinner: Number(req.query.auctionWinner)
             }
+
+            const auctions = await this.auctionService.find(query);
             res.status(200).json(auctions);
         } catch (error) {
             next(error);
