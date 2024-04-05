@@ -56,7 +56,7 @@ export const bidStoreClient: BidStoreService = {
             .then(auction => {
                 if(auction){
                     auction.status = AuctionStatus.Done;
-                    auction.userId = bid.bidder?bid.bidder.id:undefined;
+                    auction.winnerId = bid.bidder?bid.bidder.id:undefined;
                     auction.lastBid = bid.reachedValue;
                     return auction.save();
                 }

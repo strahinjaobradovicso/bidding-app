@@ -14,8 +14,9 @@ export class AuctionController {
 
     public scheduleNewAuction = async (req: Request, res: Response, next: NextFunction) => {
         try {
+            const ownerId:number = req.body.userId;
             const auctionData: CreateAuctionDto = req.body;
-            const scheduleAuctionData: AuctionModel = await this.auctionService.createAuction(auctionData);
+            const scheduleAuctionData: AuctionModel = await this.auctionService.createAuction(ownerId, auctionData);
             res.status(201).json({ data: scheduleAuctionData, message: 'auction scheduled' });
         } catch (error) {
             next(error);    

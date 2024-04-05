@@ -6,7 +6,7 @@ const dummyAuctions = [
         last_bid: 0,
         status: AuctionStatus.Upcoming,
         item_id:1,
-        user_id:null,
+        owner_id:1,
         starting_bid:100,
         created_at: new Date(),
         updated_at: new Date()
@@ -16,7 +16,7 @@ const dummyAuctions = [
         last_bid: 0,
         status: AuctionStatus.Upcoming,
         item_id:2,
-        user_id:null,
+        owner_id:2,
         starting_bid:900,
         created_at: new Date(),
         updated_at: new Date()

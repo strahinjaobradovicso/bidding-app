@@ -95,15 +95,15 @@ DB.Bid.belongsTo(DB.Auction, {
 
 DB.User.hasMany(DB.Auction, {
     foreignKey: {
-        name: 'userId',
-        field: 'user_id',
+        name: 'winnerId',
+        field: 'winner_id',
         allowNull: true
     },
 })
 DB.Auction.belongsTo(DB.User, {
     foreignKey: {
-        name: 'userId',
-        field: 'user_id',
+        name: 'winnerId',
+        field: 'winner_id',
         allowNull: true
     },
 })
@@ -123,5 +123,22 @@ DB.Image.belongsTo(DB.Item, {
         allowNull: false
     },
 })
+
+
+DB.User.hasMany(DB.Auction, {
+    foreignKey: {
+        name: 'ownerId',
+        field: 'owner_id',
+        allowNull: false
+    },
+})
+DB.Auction.belongsTo(DB.User, {
+    foreignKey: {
+        name: 'ownerId',
+        field: 'owner_id',
+        allowNull: false
+    },
+})
+
 
 export default DB;

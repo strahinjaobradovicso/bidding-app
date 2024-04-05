@@ -32,7 +32,7 @@ export class AuctionService {
         return true;
     }  
 
-    public createAuction = async (auctionData: CreateAuctionDto): Promise<AuctionModel> => {
+    public createAuction = async (ownerId: number, auctionData: CreateAuctionDto): Promise<AuctionModel> => {
         auctionData.start = new Date(auctionData.start);
         if(!this.isStartTimeValid(auctionData.start)){
             throw new HttpException(409, `auction start time is not valid`)
@@ -45,7 +45,7 @@ export class AuctionService {
 
         let auction;
         try {
-            auction = await this.dbAuction.create(auctionData);
+            auction = await this.dbAuction.create({...auctionData, ownerId});
         } catch (error) {
             throw new HttpException(500);
         }
