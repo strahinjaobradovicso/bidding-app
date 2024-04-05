@@ -13,7 +13,6 @@ export enum AuctionStatus {
 
 export interface AuctionModel extends 
     BelongsToMixin<ItemModel, number, 'ItemModel'>,
-    BelongsToMixin<UserModel, number, 'UserModel'>,
     HasManyMixin<BidModel, number, 'BidModel'>
     {
         id: CreationOptional<number>,
@@ -21,12 +20,13 @@ export interface AuctionModel extends
         lastBid?: number,
         status: AuctionStatus,
         itemId: number,
-        userId?: number,
+        ownerId: number,
+        winnerId?: number,
         startingBid: number
 }
 
-type AuctionModelAttributes = InferAttributes<AuctionModel, { omit:'itemId' | 'userId' }>
-type AuctionCreationAttributes = InferCreationAttributes<AuctionModel, { omit: 'lastBid' | 'status' | 'userId'}>
+type AuctionModelAttributes = InferAttributes<AuctionModel, { omit:'itemId' | 'winnerId' }>
+type AuctionCreationAttributes = InferCreationAttributes<AuctionModel, { omit: 'lastBid' | 'status' | 'winnerId'}>
 
 export class AuctionModel extends Model<AuctionModelAttributes, AuctionCreationAttributes> {
     
@@ -58,6 +58,9 @@ const initAuction = (sequelize: Sequelize)=>{
             startingBid:{
                 type: DataTypes.DOUBLE,
                 allowNull: false
+            },
+            ownerId:{
+                type: DataTypes.INTEGER
             }
         },
         {
