@@ -111,7 +111,7 @@ export class AuctionService {
 
         
         if(query.auctionWinner){
-            whereAuction.userId = query.auctionWinner
+            whereAuction.winnerId = query.auctionWinner
         }
         
         const whereItem: any = {
