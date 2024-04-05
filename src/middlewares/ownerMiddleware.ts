@@ -5,12 +5,13 @@ import { HttpException } from "../exceptions/httpException";
 export const isOwnerMiddleware = (
     model: any,
     inside: 'params' | 'query' | 'body',
-    modelIdKey: string = 'id'
+    modelId: string,
+    ownerFk: string
     ) => {
 
     return async (req: Request, res: Response, next: NextFunction) => {
 
-        const modelData = await model.findByPk(req[inside][modelIdKey]);
+        const modelData = await model.findByPk(req[inside][modelId]);
         if(!modelData){
             return next(new HttpException(404, 'resource not found'));
         }
@@ -20,7 +21,13 @@ export const isOwnerMiddleware = (
             return next(new Error('request missing token'));
         }
 
-        if(modelData.userId !== token.userId){
+        const owner = modelData[ownerFk];
+
+        if(!owner){
+            return next(new Error('user fk not found'));
+        }
+
+        if(owner !== token.userId){
             return next(new Error('not the owner'));
         }
 

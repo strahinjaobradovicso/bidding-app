@@ -9,8 +9,8 @@ const dbModel = {
         return this;
     }
 }
-const paramsOwnerMiddleware = isOwnerMiddleware(dbModel, 'params', 'dbModelId');
-const bodyOwnerMiddleware = isOwnerMiddleware(dbModel, 'body', 'dbModelId');
+const paramsOwnerMiddleware = isOwnerMiddleware(dbModel, 'params', 'dbModelId', 'userId');
+const bodyOwnerMiddleware = isOwnerMiddleware(dbModel, 'body', 'dbModelId', 'userId');
 
 let res: Partial<Response>;
 
