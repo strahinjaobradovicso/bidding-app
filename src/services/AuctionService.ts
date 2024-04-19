@@ -116,7 +116,7 @@ export class AuctionService {
         
         const whereItem: any = {
             title: {
-                [Op.startsWith]: query.itemTitle
+                [Op.substring]: query.itemTitle
             }
         }
         if(query.itemOwner){
@@ -137,7 +137,8 @@ export class AuctionService {
 
             where: whereAuction,
             offset: (query.page - 1) * query.itemsPerPage,
-            limit: query.itemsPerPage
+            limit: query.itemsPerPage,
+            distinct:true
         });
         
 

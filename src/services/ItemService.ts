@@ -72,11 +72,12 @@ export class ItemService {
             where:{ 
                 userId: query.owner,
                 title: {
-                    [Op.startsWith]: query.title
+                    [Op.substring]: query.title
                 }
             },
             offset: (query.page - 1)* query.itemsPerPage,
-            limit: query.itemsPerPage
+            limit: query.itemsPerPage,
+            distinct:true
         });
     }
 }
