@@ -21,7 +21,7 @@ export class AuctionHandler implements SocketHandler {
                 await socket.join(`${auctionId}`)
                 const auctionBid: AuctionBid = bidStoreClient.getBid(auctionId);
                 const auctionBidDto: BidToClient = auctionBid.toDto(true);
-                socket.emit('enterAuctionToClient', new EventResponse(EventStatus.Success), auctionId, auctionBidDto);
+                socket.emit('enterAuctionToClient', new EventResponse(EventStatus.Success), auctionBidDto);
             } catch (error) {
                 socketErrorHandler(socket, 'enterAuctionToClient', error);
             }
@@ -44,10 +44,10 @@ export class AuctionHandler implements SocketHandler {
                 const newAskBidDto: BidToClient = newAskBid.toDto(false);
 
                 socket
-                .emit('placeBidToClient', new EventResponse(EventStatus.Success), data.auctionId, newAskBidDto);
+                .emit('placeBidToClient', new EventResponse(EventStatus.Success), newAskBidDto);
 
                 socket.to(data.auctionId)
-                .emit('placeBidToClient', new EventResponse(EventStatus.Success), data.auctionId, newAskBidDto);
+                .emit('placeBidToClient', new EventResponse(EventStatus.Success), newAskBidDto);
 
             } catch (error) {
                 socketErrorHandler(socket, 'placeBidToClient', error);

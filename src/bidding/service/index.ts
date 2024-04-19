@@ -50,7 +50,7 @@ export const bidStoreClient: BidStoreService = {
 
         for(const [key, bid] of bids){
             const io = SocketServer.getInstance();
-            io.of('/auctions').to(key).emit("auctionResult", key, bid.toDto(false));
+            io.of('/auctions').to(key).emit("auctionResult", bid.toDto(false));
 
             DB.Auction.findByPk(key)
             .then(auction => {
@@ -80,7 +80,7 @@ export const bidStoreClient: BidStoreService = {
             if(diffByUnit(lastBidTime, now, TimeUnit.Seconds) >= interval){
                 const lowerAsk = bid.lowerAskValue();
                 if(lowerAsk){
-                    io.of('/auctions').to(key).emit("loweredAskBid", key, lowerAsk);
+                    io.of('/auctions').to(key).emit("loweredAskBid", bid.toDto(false));
                 }
             }
         }   
