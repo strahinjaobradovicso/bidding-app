@@ -50,6 +50,7 @@ export const bidStoreClient: BidStoreService = {
 
         for(const [key, bid] of bids){
             const io = SocketServer.getInstance();
+            bid.isFinal = true;
             io.of('/auctions').to(key).emit("auctionResult", bid.toDto(false));
 
             DB.Auction.findByPk(key)

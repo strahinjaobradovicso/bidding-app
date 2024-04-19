@@ -6,4 +6,5 @@ export interface BidToClient {
     askValue: number;
     auctionRules?: AuctionRules;
     reachedValue: number;
+    isFinal: boolean;
 }

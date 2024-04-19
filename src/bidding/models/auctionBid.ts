@@ -1,7 +1,6 @@
 import { EventException } from "../../sockets/exceptions/eventException";
 import { BidToClient } from "../dtos/bidToClient";
 import { Bidder } from "../interfaces/bidder";
-import { TimeUnit, diffByUnit } from "../util/diffByUnit";
 import { AuctionRules } from "./auctionRules";
 
 export class AuctionBid {
@@ -13,6 +12,7 @@ export class AuctionBid {
     public itemPrice: number;
     public increment: number;
     public bidder?: Bidder;
+    private _isFinal = false;
 
     constructor(auctionRules: AuctionRules, itemPrice: number) {
         this.auctionRules = auctionRules;
@@ -32,9 +32,15 @@ export class AuctionBid {
         this.reachedValue = v;
         this.time = new Date();
 
-        const step = this.itemPrice * this.increment;
+        const step = this.itemPrice * this.increment || 1;
         this._askValue = v + step;
     }
+
+    
+    public set isFinal(v : boolean) {
+        this._isFinal = v;
+    }
+    
 
     public lowerAskValue(): number | null {
         const startingIncrement = this.auctionRules.bidIncrement;
@@ -47,13 +53,14 @@ export class AuctionBid {
         }
         return null;
     }
-    
+
     public toDto(includeRules: boolean): BidToClient {
         const auctionBidDto = {
             bidder: this.bidder,
             askValue: this._askValue,
             auctionRules: includeRules ? this.auctionRules : undefined,
-            reachedValue: this.reachedValue
+            reachedValue: this.reachedValue,
+            isFinal: this._isFinal
         }
         return auctionBidDto;
     }
