@@ -1,6 +1,5 @@
 import { Server, Socket } from "socket.io";
 import { authMiddleware } from "../middlewares/authMiddleware";
-import { NextFunction, Request, Response } from "express";
 import { SocketHandler } from "./multiplexing/socketHandler";
 
 const SOCKET_CORS = {
@@ -40,7 +39,6 @@ export class SocketServer extends Server {
             const namespace = SocketServer.io.of(element.path, (socket: Socket) => {
                 element.handleConnection(socket);
             })
-            namespace.use(element.middlewareImplementation)
         });
     }
 }

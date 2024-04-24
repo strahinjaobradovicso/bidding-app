@@ -1,4 +1,3 @@
-import { EventException } from "../../sockets/exceptions/eventException";
 import { SocketServer } from "../../sockets/socketServer";
 import { BidToServer } from "../dtos/bidToServer";
 import { AuctionBid } from "../models/auctionBid";
@@ -6,36 +5,38 @@ import { TimeUnit, diffByUnit } from "../util/diffByUnit";
 import DB from "../../database";
 import { Bidder } from "../interfaces/bidder";
 import { AuctionStatus } from "../../database/models/auction";
+import { Socket } from "socket.io";
+import { ToClientEvents, ToServerEvents } from "../../sockets/events/auctionEvents";
 
-const bids = new Map<string, AuctionBid>;
+export class BidStoreClient {
 
-interface BidStoreService {
-    setBid: (key: string, bid: AuctionBid) => void
-    getBid: (key: string) => AuctionBid
-    placeBid: (bidder: Bidder, bid: BidToServer) => AuctionBid
-    clearAuctions: () => void
-    lowerAskBid: (interval: number) => void
-}
+    private bids = new Map<string, AuctionBid>;
+    declare socket: Socket<ToServerEvents, ToClientEvents>;
 
-export const bidStoreClient: BidStoreService = {
-    setBid: (key: string, bid: AuctionBid) => {
-        bids.set(key, bid);
-    },
-    getBid: (key: string) => {
-        const auctionBid = bids.get(key);
+    private io: SocketServer;
+
+    constructor(io: SocketServer){
+        this.io = io;
+    }
+
+    setBid(key: string, bid: AuctionBid) {
+        this.bids.set(key, bid);
+    }
+
+    getBid(key: string) {
+        const auctionBid = this.bids.get(key);
         if(!auctionBid){
-            throw new EventException('auction is not active');
+            throw new Error('auction is not active');
         }
         return auctionBid;
-    },
-    placeBid: (bidder: Bidder, bid: BidToServer) => {
+    }
+
+    placeBid(bidder: Bidder, bid: BidToServer) {
         const key = bid.auctionId;
         const value = bid.value;
-
-        const auctionBid = bidStoreClient.getBid(key);
+        const auctionBid = this.getBid(key);
         auctionBid.askValue = value;
         auctionBid.bidder = bidder;
-
         DB.Bid.create({
             auctionId: Number(key),
             userId: bidder.id,
@@ -45,14 +46,12 @@ export const bidStoreClient: BidStoreService = {
         });
         
         return auctionBid;
-    },
-    clearAuctions: () => {
+    }
 
-        for(const [key, bid] of bids){
-            const io = SocketServer.getInstance();
+    clearAuctions() {
+        for(const [key, bid] of this.bids){
             bid.isFinal = true;
-            io.of('/auctions').to(key).emit("auctionResult", bid.toDto(false));
-
+            this.io.of('/auctions').to(key).emit('bidAccept', bid.toDto());
             DB.Auction.findByPk(key)
             .then(auction => {
                 if(auction){
@@ -69,21 +68,19 @@ export const bidStoreClient: BidStoreService = {
                 console.log(err);
             })
         }
-
-        bids.clear();  
-    },
-    lowerAskBid: (interval: number) => {
-        const io = SocketServer.getInstance();
-
-        for(const [key, bid] of bids){
+        this.bids.clear();  
+    }
+    
+    lowerAskBid(interval: number) {
+        for(const [key, bid] of this.bids){
             const now = new Date()
             const lastBidTime = bid.time;
             if(diffByUnit(lastBidTime, now, TimeUnit.Seconds) >= interval){
                 const lowerAsk = bid.lowerAskValue();
                 if(lowerAsk){
-                    io.of('/auctions').to(key).emit("loweredAskBid", bid.toDto(false));
+                    this.io.of('/auctions').to(key).emit('bidAccept', bid.toDto());
                 }
             }
         }   
-    },
+    }
 }

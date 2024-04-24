@@ -7,7 +7,6 @@ import { AuthRoute } from "./routes/authRoute";
 import { Routes } from "./routes/interfaces/route";
 import { ItemRoute } from "./routes/itemRoute";
 import { UserRoute } from "./routes/userRoute";
-import { auctionScheduler } from "./scheduler/auctionScheduler";
 import Server from "./server";
 import { AuctionService } from "./services/AuctionService";
 import { AuthService } from "./services/AuthService";
@@ -18,6 +17,8 @@ import { SocketServer } from "./sockets/socketServer";
 import { AuctionHandler } from "./sockets/handlers/auctionHandler";
 import { SocketHandler } from "./sockets/multiplexing/socketHandler";
 import DB from "./database";
+import { BidStoreClient } from "./bidding/service";
+import { AuctionScheduler } from "./scheduler/auctionScheduler";
 
 const userService = new UserService();
 const authService = new AuthService();
@@ -34,14 +35,15 @@ const routes: Routes[] = [
 const server = new Server(routes)
 const httpServer = http.createServer(server.app);
 
-const handlers: SocketHandler[] = [
-    new AuctionHandler()
-]
 const io = SocketServer.getInstance(httpServer);
+const bidStoreClient = new BidStoreClient(io);
+const handlers: SocketHandler[] = [
+    new AuctionHandler(bidStoreClient)
+]
 io.initializeHandlers(handlers);
 
-auctionScheduler.init(auctionService);
-
+const auctionScheduler = new AuctionScheduler(auctionService, bidStoreClient);
+auctionScheduler.start();
 
 DB.connect()
 .then(()=>{

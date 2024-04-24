@@ -1,4 +1,3 @@
-import { EventException } from "../../sockets/exceptions/eventException";
 import { BidToClient } from "../dtos/bidToClient";
 import { Bidder } from "../interfaces/bidder";
 import { AuctionRules } from "./auctionRules";
@@ -26,7 +25,7 @@ export class AuctionBid {
     public set askValue(v : number) {
 
         if(v < this._askValue){
-            throw new EventException('invalid bid value');
+            throw new Error('invalid bid value');
         }
 
         this.reachedValue = v;
@@ -54,11 +53,10 @@ export class AuctionBid {
         return null;
     }
 
-    public toDto(includeRules: boolean): BidToClient {
+    public toDto(): BidToClient {
         const auctionBidDto = {
             bidder: this.bidder,
             askValue: this._askValue,
-            auctionRules: includeRules ? this.auctionRules : undefined,
             reachedValue: this.reachedValue,
             isFinal: this._isFinal
         }
