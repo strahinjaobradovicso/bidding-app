@@ -136,6 +136,9 @@ export class AuctionService {
             }],
 
             where: whereAuction,
+            order: [
+                ['start', 'ASC']
+            ],
             offset: (query.page - 1) * query.itemsPerPage,
             limit: query.itemsPerPage,
             distinct:true
