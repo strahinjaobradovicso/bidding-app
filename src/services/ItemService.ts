@@ -75,6 +75,9 @@ export class ItemService {
                     [Op.substring]: query.title
                 }
             },
+            order: [
+                ['created_at', 'DESC']
+            ],
             offset: (query.page - 1)* query.itemsPerPage,
             limit: query.itemsPerPage,
             distinct:true
