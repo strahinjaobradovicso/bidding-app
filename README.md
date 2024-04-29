@@ -43,6 +43,7 @@ npm run start_dev
 ## Unit testing
 npm run test
 
-## Happy bidding!
+## Client
+[Bidder](https://github.com/strahinjaobradovicso/bidder)
 
 
